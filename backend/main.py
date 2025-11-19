@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.app.api.endpoints import auth
+from backend.app.api.endpoints import baby # 新增导入
 # from backend.app.db.base import Base
 # from backend.app.db.session import engine
 
@@ -24,6 +25,12 @@ app.add_middleware(
 # 注册我们之前写的 auth (认证) 路由
 # 前缀 /api/auth 对应 1.1.1 需求中的 API 设计
 app.include_router(auth.router, prefix="/api/auth", tags=["认证模块"])
+
+# === 新增代码开始 ===
+# 注册 Baby 路由
+# 前缀 /api/babies
+app.include_router(baby.router, prefix="/api/babies", tags=["宝宝管理模块"])
+# === 新增代码结束 ===
 
 @app.get("/")
 def root():
