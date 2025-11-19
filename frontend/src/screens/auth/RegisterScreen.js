@@ -9,8 +9,10 @@ import {
   SafeAreaView 
 } from 'react-native';
 import { sendVerifyCode, loginOrRegister } from '../../services/authService';
+import { authStorage } from '../../utils/storage'; // 【新增】引入 storage 工具
 
-const RegisterScreen = () => {
+// 【修改】接收 onLoginSuccess props
+const RegisterScreen = ({ onLoginSuccess }) => {
   // 状态管理
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
@@ -58,8 +60,21 @@ const RegisterScreen = () => {
     try {
       setLoading(true);
       const data = await loginOrRegister(phone, code);
-      Alert.alert('欢迎', `登录成功，用户ID: ${data.user_id}`);
-      // TODO: 这里应该跳转到主页 (Home) 并存储 Token
+      // Alert.alert('欢迎', `登录成功，用户ID: ${data.user_id}`); // 移除之前的提示
+
+      // ====== 【新增】保存数据并通知 App.js 开始 ======
+      // 1. 保存数据到本地 (access_token 和用户简略信息)
+      await authStorage.setLoginData(data.access_token, {
+        id: data.user_id,
+        nickname: data.nickname
+      });
+      
+      // 2. 通知 App.js 状态已改变，自动切换到 Home
+      if (onLoginSuccess) {
+        onLoginSuccess(data.access_token);
+      }
+      // ====== 【新增】保存数据并通知 App.js 结束 ======
+
     } catch (error) {
       Alert.alert('登录失败', error.message);
     } finally {
