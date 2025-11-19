@@ -1,5 +1,6 @@
 from backend.app.db.base_class import Base
 from backend.app.db.session import engine
+from backend.app.models.baby import Baby
 # 必须导入所有定义好的 Model，否则无法自动创建表
 from backend.app.models.user import User 
 
