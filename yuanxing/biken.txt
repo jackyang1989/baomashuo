@@ -1,0 +1,500 @@
+import React, { useState } from 'react';
+import { ArrowLeft, AlertTriangle, TrendingDown, Users, ThumbsDown, ChevronRight, Filter, Info, Search } from 'lucide-react';
+
+const PitfallListPage = () => {
+  const [activeTab, setActiveTab] = useState('age');
+  const [selectedAge, setSelectedAge] = useState('3-6个月');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  // 月龄分类
+  const ageGroups = ['0-3个月', '3-6个月', '6-12个月', '1-2岁'];
+
+  // 产品分类
+  const categories = [
+    { id: 'all', name: '全部', count: 23 },
+    { id: 'bottle', name: '奶瓶', count: 8 },
+    { id: 'bowl', name: '辅食碗', count: 5 },
+    { id: 'toys', name: '玩具', count: 4 },
+    { id: 'warmer', name: '温奶器', count: 3 },
+    { id: 'other', name: '其他', count: 3 }
+  ];
+
+  // 避坑榜单数据
+  const pitfallProducts = [
+    {
+      id: 1,
+      rank: 1,
+      name: 'XX品牌防胀气奶瓶',
+      brand: 'XX品牌',
+      image: '🍼',
+      notRecommendCount: 78,
+      totalReviews: 145,
+      notRecommendRate: 54,
+      severity: 'high',
+      mainIssues: [
+        { issue: '仍然胀气严重', percent: 42, count: 32 },
+        { issue: '奶嘴太硬宝宝不接受', percent: 36, count: 28 },
+        { issue: '漏奶严重', percent: 22, count: 18 }
+      ],
+      typicalCase: {
+        user: '小雨妈妈',
+        age: '3个月宝宝',
+        days: 15,
+        summary: '宣传防胀气，但我家宝宝用了还是胀气，后来换了YY品牌就好了'
+      },
+      alternative: {
+        name: 'YY品牌防胀气奶瓶',
+        recommendRate: 85,
+        price: 98
+      }
+    },
+    {
+      id: 2,
+      rank: 2,
+      name: 'ZZ电动吸奶器',
+      brand: 'ZZ品牌',
+      image: '🤱',
+      notRecommendCount: 124,
+      totalReviews: 189,
+      notRecommendRate: 66,
+      severity: 'high',
+      mainIssues: [
+        { issue: '使用1个月后故障', percent: 45, count: 56 },
+        { issue: '吸力不足', percent: 32, count: 40 },
+        { issue: '噪音太大', percent: 23, count: 28 }
+      ],
+      typicalCase: {
+        user: '晴天妈妈',
+        age: '产后2个月',
+        days: 30,
+        summary: '用了一个月就坏了，客服说过保不给换，气死了'
+      },
+      alternative: {
+        name: 'AA品牌吸奶器',
+        recommendRate: 78,
+        price: 299
+      }
+    },
+    {
+      id: 3,
+      rank: 3,
+      name: 'BB吸盘辅食碗',
+      brand: 'BB品牌',
+      image: '🥣',
+      notRecommendCount: 89,
+      totalReviews: 156,
+      notRecommendRate: 57,
+      severity: 'medium',
+      mainIssues: [
+        { issue: '吸盘不牢固', percent: 68, count: 60 },
+        { issue: '容易打翻', percent: 45, count: 40 },
+        { issue: '清洗麻烦', percent: 25, count: 22 }
+      ],
+      typicalCase: {
+        user: '暖暖妈咪',
+        age: '6个月宝宝',
+        days: 7,
+        summary: '吸盘根本吸不住，宝宝一拉就掉，用了3次就闲置了'
+      },
+      alternative: {
+        name: 'CC品牌辅食碗',
+        recommendRate: 82,
+        price: 68
+      }
+    },
+    {
+      id: 4,
+      rank: 4,
+      name: 'DD温奶器',
+      brand: 'DD品牌',
+      image: '🔥',
+      notRecommendCount: 67,
+      totalReviews: 203,
+      notRecommendRate: 33,
+      severity: 'medium',
+      mainIssues: [
+        { issue: '实际使用率低', percent: 68, count: 46 },
+        { issue: '占空间', percent: 45, count: 30 },
+        { issue: '功能鸡肋', percent: 28, count: 19 }
+      ],
+      typicalCase: {
+        user: '萌萌妈',
+        age: '4个月宝宝',
+        days: 90,
+        summary: '买回来用了几次就闲置了，直接用热水泡也能解决，不值得买'
+      },
+      alternative: null
+    }
+  ];
+
+  // 场景避坑
+  const scenarioPitfalls = [
+    {
+      scenario: '夜奶场景',
+      icon: '🌙',
+      pitfalls: [
+        { product: '需要插电的温奶器', reason: '夜里插电不方便', count: 45 },
+        { product: '玻璃奶瓶', reason: '夜里容易摔碎', count: 38 }
+      ]
+    },
+    {
+      scenario: '外出场景',
+      icon: '🚗',
+      pitfalls: [
+        { product: '体积过大的消毒器', reason: '完全带不出去', count: 56 },
+        { product: '易碎的玻璃制品', reason: '外出容易摔坏', count: 42 }
+      ]
+    },
+    {
+      scenario: '辅食期',
+      icon: '🍚',
+      pitfalls: [
+        { product: '吸盘不牢的碗', reason: '宝宝会拉掉打翻', count: 89 },
+        { product: '太深的碗', reason: '宝宝够不到底部', count: 34 }
+      ]
+    }
+  ];
+
+  const renderAgeTab = () => (
+    <div className="p-4">
+      {/* 月龄选择 */}
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-3">
+          <h3 className="font-bold text-gray-800">选择宝宝月龄</h3>
+          <Info className="w-4 h-4 text-gray-400" />
+        </div>
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          {ageGroups.map((age) => (
+            <button
+              key={age}
+              onClick={() => setSelectedAge(age)}
+              className={`px-4 py-2 rounded-xl font-medium whitespace-nowrap transition-all ${
+                selectedAge === age
+                  ? 'bg-red-500 text-white'
+                  : 'bg-gray-100 text-gray-700'
+              }`}
+            >
+              {age}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 分类筛选 */}
+      <div className="mb-4">
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={`px-3 py-1 rounded-full text-sm whitespace-nowrap transition-all ${
+                selectedCategory === cat.id
+                  ? 'bg-gray-800 text-white'
+                  : 'bg-gray-100 text-gray-700'
+              }`}
+            >
+              {cat.name}({cat.count})
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 榜单说明 */}
+      <div className="bg-orange-50 border border-orange-200 rounded-xl p-3 mb-4">
+        <div className="flex items-start gap-2">
+          <Info className="w-4 h-4 text-orange-600 flex-shrink-0 mt-0.5" />
+          <div className="text-xs text-orange-800">
+            <div className="font-semibold mb-1">榜单说明</div>
+            <div>基于{selectedAge}宝宝家庭的真实反馈，按不推荐率排序。数据每周更新，帮助你避开真正的坑。</div>
+          </div>
+        </div>
+      </div>
+
+      {/* 避坑榜单 */}
+      <div className="space-y-3">
+        {pitfallProducts.map((product) => (
+          <div key={product.id} className="bg-white rounded-2xl p-4 border-2 border-red-200 shadow-sm">
+            {/* 排名和严重程度 */}
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${
+                  product.rank <= 3 
+                    ? 'bg-red-500 text-white'
+                    : 'bg-gray-500 text-white'
+                }`}>
+                  {product.rank}
+                </div>
+                <div className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                  product.severity === 'high'
+                    ? 'bg-red-100 text-red-700'
+                    : 'bg-orange-100 text-orange-700'
+                }`}>
+                  <AlertTriangle className="w-3 h-3 inline mr-1" />
+                  {product.severity === 'high' ? '高风险' : '中风险'}
+                </div>
+              </div>
+              <TrendingDown className="w-5 h-5 text-red-500" />
+            </div>
+
+            {/* 产品信息 */}
+            <div className="flex gap-3 mb-3">
+              <div className="w-20 h-20 bg-gray-100 rounded-xl flex items-center justify-center text-4xl flex-shrink-0 border-2 border-red-200">
+                {product.image}
+              </div>
+              <div className="flex-1">
+                <div className="text-xs text-gray-500 mb-1">{product.brand}</div>
+                <div className="font-semibold text-gray-800 mb-2 line-clamp-2">
+                  {product.name}
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1 text-xs">
+                    <Users className="w-3 h-3 text-gray-500" />
+                    <span className="text-gray-600">{product.notRecommendCount}人不推荐</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs">
+                    <ThumbsDown className="w-3 h-3 text-red-500" />
+                    <span className="text-red-600 font-semibold">{product.notRecommendRate}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 主要问题 */}
+            <div className="bg-red-50 rounded-xl p-3 mb-3">
+              <div className="text-xs text-red-800 font-semibold mb-2">⚠️ 主要问题</div>
+              <div className="space-y-2">
+                {product.mainIssues.map((issue, idx) => (
+                  <div key={idx} className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="text-xs text-gray-700 mb-1">{issue.issue}</div>
+                      <div className="bg-red-200 rounded-full h-1.5 overflow-hidden">
+                        <div 
+                          className="bg-red-500 h-full"
+                          style={{ width: `${issue.percent}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    <div className="text-xs text-red-600 font-semibold ml-3 w-12 text-right">
+                      {issue.percent}%
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 典型案例 */}
+            <div className="bg-gray-50 rounded-xl p-3 mb-3">
+              <div className="text-xs text-gray-600 mb-2">
+                <span className="font-semibold">{product.typicalCase.user}</span>
+                <span className="mx-1">•</span>
+                <span>{product.typicalCase.age}</span>
+                <span className="mx-1">•</span>
+                <span>使用{product.typicalCase.days}天</span>
+              </div>
+              <div className="text-sm text-gray-800">
+                "{product.typicalCase.summary}"
+              </div>
+            </div>
+
+            {/* 替代推荐 */}
+            {product.alternative && (
+              <div className="bg-green-50 border border-green-200 rounded-xl p-3">
+                <div className="text-xs text-green-800 font-semibold mb-2">✓ 同价位推荐</div>
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="text-sm font-semibold text-gray-800">{product.alternative.name}</div>
+                    <div className="text-xs text-gray-600 mt-1">
+                      推荐率 {product.alternative.recommendRate}% • ¥{product.alternative.price}
+                    </div>
+                  </div>
+                  <button className="ml-3 bg-green-600 text-white px-4 py-2 rounded-lg text-xs font-semibold whitespace-nowrap">
+                    查看详情
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* 查看详情按钮 */}
+            <button className="w-full mt-3 text-sm text-gray-600 py-2 border border-gray-200 rounded-lg flex items-center justify-center gap-1">
+              查看完整避坑详情
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/* 加载更多 */}
+      <div className="text-center py-6">
+        <button className="text-sm text-gray-600">
+          查看更多 →
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderScenarioTab = () => (
+    <div className="p-4">
+      <div className="mb-4">
+        <h3 className="font-bold text-gray-800 mb-2">按场景避坑</h3>
+        <p className="text-sm text-gray-600">不同场景下的产品选择有讲究</p>
+      </div>
+
+      <div className="space-y-4">
+        {scenarioPitfalls.map((scenario, idx) => (
+          <div key={idx} className="bg-white rounded-2xl p-4 border border-gray-200">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="text-3xl">{scenario.icon}</div>
+              <h4 className="font-bold text-gray-800">{scenario.scenario}</h4>
+            </div>
+
+            <div className="space-y-3">
+              {scenario.pitfalls.map((pitfall, pidx) => (
+                <div key={pidx} className="bg-red-50 border border-red-200 rounded-xl p-3">
+                  <div className="flex items-start gap-2 mb-2">
+                    <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <div className="font-semibold text-sm text-gray-800 mb-1">
+                        {pitfall.product}
+                      </div>
+                      <div className="text-xs text-gray-700">
+                        {pitfall.reason}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 text-xs text-gray-600">
+                    <Users className="w-3 h-3" />
+                    <span>{pitfall.count}位宝妈反馈</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderReasonTab = () => (
+    <div className="p-4">
+      <div className="mb-4">
+        <h3 className="font-bold text-gray-800 mb-2">高频踩坑原因</h3>
+        <p className="text-sm text-gray-600">了解这些，少花冤枉钱</p>
+      </div>
+
+      <div className="space-y-3">
+        {[
+          {
+            reason: '虚假宣传',
+            desc: '宣传功能与实际效果不符',
+            count: 156,
+            examples: ['防胀气无效', '抗菌功能存疑', '智能功能鸡肋']
+          },
+          {
+            reason: '质量问题',
+            desc: '使用一段时间后出现故障',
+            count: 124,
+            examples: ['短期内损坏', '材质劣化', '功能失效']
+          },
+          {
+            reason: '设计缺陷',
+            desc: '产品设计不合理影响使用',
+            count: 98,
+            examples: ['吸盘不牢', '容易打翻', '清洗困难']
+          },
+          {
+            reason: '实际使用率低',
+            desc: '买了发现用不上，闲置率高',
+            count: 203,
+            examples: ['功能重复', '占空间', '使用场景少']
+          }
+        ].map((item, idx) => (
+          <div key={idx} className="bg-white rounded-xl p-4 border border-gray-200">
+            <div className="flex items-center justify-between mb-2">
+              <div className="font-bold text-gray-800">{item.reason}</div>
+              <div className="text-sm text-red-600 font-semibold">{item.count}次</div>
+            </div>
+            <div className="text-sm text-gray-600 mb-3">{item.desc}</div>
+            <div className="flex flex-wrap gap-2">
+              {item.examples.map((ex, eidx) => (
+                <span key={eidx} className="text-xs bg-red-50 text-red-700 px-2 py-1 rounded">
+                  {ex}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="max-w-md mx-auto bg-gray-50 min-h-screen flex flex-col">
+      {/* 顶部导航 */}
+      <div className="bg-gradient-to-r from-red-500 to-orange-500 px-4 py-4 text-white sticky top-0 z-50">
+        <div className="flex items-center justify-between mb-3">
+          <button className="flex items-center gap-2">
+            <ArrowLeft className="w-5 h-5" />
+            <span className="font-bold text-lg">避坑榜</span>
+          </button>
+          <button>
+            <Search className="w-5 h-5" />
+          </button>
+        </div>
+        
+        <div className="text-sm opacity-90">
+          帮你避开{pitfallProducts.length * 3}个真实的坑
+        </div>
+      </div>
+
+      {/* Tab导航 */}
+      <div className="bg-white px-4 flex gap-6 border-b sticky top-16 z-40">
+        <button
+          onClick={() => setActiveTab('age')}
+          className={`pb-3 font-medium transition-all ${
+            activeTab === 'age'
+              ? 'text-red-600 border-b-2 border-red-600'
+              : 'text-gray-600'
+          }`}
+        >
+          按月龄
+        </button>
+        <button
+          onClick={() => setActiveTab('scenario')}
+          className={`pb-3 font-medium transition-all ${
+            activeTab === 'scenario'
+              ? 'text-red-600 border-b-2 border-red-600'
+              : 'text-gray-600'
+          }`}
+        >
+          按场景
+        </button>
+        <button
+          onClick={() => setActiveTab('reason')}
+          className={`pb-3 font-medium transition-all ${
+            activeTab === 'reason'
+              ? 'text-red-600 border-b-2 border-red-600'
+              : 'text-gray-600'
+          }`}
+        >
+          按原因
+        </button>
+      </div>
+
+      {/* 内容区域 */}
+      <div className="flex-1 overflow-y-auto">
+        {activeTab === 'age' && renderAgeTab()}
+        {activeTab === 'scenario' && renderScenarioTab()}
+        {activeTab === 'reason' && renderReasonTab()}
+      </div>
+
+      {/* 提交避坑按钮 */}
+      <div className="bg-white border-t px-4 py-3 sticky bottom-0 z-50">
+        <button className="w-full bg-gradient-to-r from-red-500 to-orange-500 text-white py-3 rounded-xl font-semibold">
+          我也要提交避坑产品
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default PitfallListPage;
