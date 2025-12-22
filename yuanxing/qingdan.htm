@@ -1,0 +1,470 @@
+import React, { useState } from 'react';
+import { ArrowLeft, Plus, Check, X, ChevronRight, Star, Users, TrendingUp, ShoppingCart, Share2, Download, AlertCircle, CheckCircle, MinusCircle } from 'lucide-react';
+
+const ChecklistPage = () => {
+  const [activeTab, setActiveTab] = useState('official');
+  const [selectedAge, setSelectedAge] = useState('3-6个月');
+  const [checkedItems, setCheckedItems] = useState({});
+
+  // 月龄选项
+  const ageGroups = ['0-3个月', '3-6个月', '6-12个月', '1-2岁'];
+
+  // 官方清单模板
+  const officialLists = [
+    {
+      id: 'newborn-essentials',
+      title: '新生儿必备清单',
+      desc: '0-3个月宝宝必备物品',
+      icon: '👶',
+      userCount: 23456,
+      items: [
+        {
+          id: 1,
+          name: 'Comotomo奶瓶 150ml',
+          category: '喂养',
+          necessity: 'must',
+          reason: '78%的宝妈首选',
+          price: 128,
+          recommendRate: 85,
+          checked: false
+        },
+        {
+          id: 2,
+          name: '新生儿奶嘴 S号',
+          category: '喂养',
+          necessity: 'must',
+          reason: '需要备2-3个',
+          price: 39,
+          recommendRate: 82,
+          checked: false
+        },
+        {
+          id: 3,
+          name: '奶瓶清洗刷',
+          category: '喂养',
+          necessity: 'recommended',
+          reason: '清洁必备',
+          price: 29,
+          recommendRate: 76,
+          checked: false
+        },
+        {
+          id: 4,
+          name: '温奶器',
+          category: '喂养',
+          necessity: 'optional',
+          reason: '使用率不高，68%闲置',
+          price: 299,
+          recommendRate: 45,
+          checked: false
+        }
+      ]
+    },
+    {
+      id: 'feeding-essentials',
+      title: '辅食期必备清单',
+      desc: '6个月开始添加辅食',
+      icon: '🍚',
+      userCount: 18923,
+      items: [
+        {
+          id: 1,
+          name: '辅食碗套装',
+          category: '辅食',
+          necessity: 'must',
+          reason: '建议选吸盘牢固的',
+          price: 68,
+          recommendRate: 79,
+          checked: false
+        },
+        {
+          id: 2,
+          name: '硅胶软勺',
+          category: '辅食',
+          necessity: 'must',
+          reason: '保护宝宝牙龈',
+          price: 25,
+          recommendRate: 88,
+          checked: false
+        },
+        {
+          id: 3,
+          name: '围兜3件套',
+          category: '辅食',
+          necessity: 'must',
+          reason: '需要多备几个',
+          price: 39,
+          recommendRate: 92,
+          checked: false
+        }
+      ]
+    }
+  ];
+
+  // 场景清单
+  const scenarioLists = [
+    {
+      id: 'night-feeding',
+      title: '夜奶场景清单',
+      desc: '夜间喂奶更方便',
+      icon: '🌙',
+      userCount: 12345,
+      tips: ['选择不用插电的温奶器', '准备小夜灯', 'PPSU材质防摔']
+    },
+    {
+      id: 'travel',
+      title: '外出旅行清单',
+      desc: '带娃出门不慌张',
+      icon: '🚗',
+      userCount: 15678,
+      tips: ['便携装优先', '避免玻璃制品', '准备一次性用品']
+    },
+    {
+      id: 'transition',
+      title: '转奶期清单',
+      desc: '换奶粉/奶瓶必备',
+      icon: '🔄',
+      userCount: 9876,
+      tips: ['先买小容量试用', '准备备用奶嘴', '循序渐进']
+    }
+  ];
+
+  // 我的清单（用户自建）
+  const myLists = [
+    {
+      id: 'my-list-1',
+      title: '宝宝6个月囤货清单',
+      itemCount: 12,
+      totalPrice: 856,
+      checkedCount: 7,
+      updatedAt: '2天前'
+    },
+    {
+      id: 'my-list-2',
+      title: '送礼清单',
+      itemCount: 8,
+      totalPrice: 620,
+      checkedCount: 8,
+      updatedAt: '1周前'
+    }
+  ];
+
+  const handleToggleItem = (listId, itemId) => {
+    const key = `${listId}-${itemId}`;
+    setCheckedItems({ ...checkedItems, [key]: !checkedItems[key] });
+  };
+
+  const renderOfficialTab = () => (
+    <div className="p-4">
+      {/* 月龄选择 */}
+      <div className="mb-4">
+        <div className="text-sm text-gray-600 mb-3">选择宝宝月龄</div>
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          {ageGroups.map((age) => (
+            <button
+              key={age}
+              onClick={() => setSelectedAge(age)}
+              className={`px-4 py-2 rounded-xl font-medium whitespace-nowrap transition-all ${
+                selectedAge === age
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-100 text-gray-700'
+              }`}
+            >
+              {age}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 官方清单列表 */}
+      <div className="space-y-4">
+        {officialLists.map((list) => (
+          <div key={list.id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-200">
+            {/* 清单头部 */}
+            <div className="flex items-center gap-3 mb-3">
+              <div className="text-4xl">{list.icon}</div>
+              <div className="flex-1">
+                <div className="font-bold text-gray-800 mb-1">{list.title}</div>
+                <div className="text-xs text-gray-600">{list.desc}</div>
+                <div className="flex items-center gap-2 mt-2">
+                  <Users className="w-3 h-3 text-gray-500" />
+                  <span className="text-xs text-gray-500">{list.userCount.toLocaleString()}人在用</span>
+                </div>
+              </div>
+              <button className="text-blue-600">
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* 物品列表 */}
+            <div className="space-y-2">
+              {list.items.map((item) => (
+                <div key={item.id} className="bg-gray-50 rounded-xl p-3">
+                  <div className="flex items-start gap-3">
+                    {/* 复选框 */}
+                    <button
+                      onClick={() => handleToggleItem(list.id, item.id)}
+                      className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 ${
+                        checkedItems[`${list.id}-${item.id}`]
+                          ? 'bg-blue-500 border-blue-500'
+                          : 'border-gray-300'
+                      }`}
+                    >
+                      {checkedItems[`${list.id}-${item.id}`] && (
+                        <Check className="w-3 h-3 text-white" />
+                      )}
+                    </button>
+
+                    {/* 物品信息 */}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className={`font-medium text-sm ${
+                          checkedItems[`${list.id}-${item.id}`] ? 'line-through text-gray-400' : 'text-gray-800'
+                        }`}>
+                          {item.name}
+                        </span>
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${
+                          item.necessity === 'must'
+                            ? 'bg-red-100 text-red-700'
+                            : item.necessity === 'recommended'
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'bg-gray-100 text-gray-700'
+                        }`}>
+                          {item.necessity === 'must' ? '必买' : item.necessity === 'recommended' ? '建议' : '可选'}
+                        </span>
+                      </div>
+
+                      <div className="text-xs text-gray-600 mb-2">
+                        💡 {item.reason}
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm font-bold text-red-500">¥{item.price}</span>
+                          <div className="flex items-center gap-1">
+                            <TrendingUp className="w-3 h-3 text-green-600" />
+                            <span className="text-xs text-gray-600">{item.recommendRate}%推荐</span>
+                          </div>
+                        </div>
+                        <button className="text-blue-600 text-xs font-medium">
+                          查看详情
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* 清单操作 */}
+            <div className="flex gap-2 mt-3 pt-3 border-t">
+              <button className="flex-1 bg-blue-500 text-white py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-1">
+                <ShoppingCart className="w-4 h-4" />
+                一键购买
+              </button>
+              <button className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700">
+                <Share2 className="w-4 h-4" />
+              </button>
+              <button className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700">
+                <Download className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 温馨提示 */}
+      <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mt-4">
+        <div className="flex items-start gap-2">
+          <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+          <div className="text-sm text-yellow-800">
+            <div className="font-semibold mb-1">购物建议</div>
+            <div>• 必买项目优先，可选项目根据实际需求</div>
+            <div>• 新手建议从小容量试用开始</div>
+            <div>• 关注同月龄宝妈的真实反馈</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderScenarioTab = () => (
+    <div className="p-4">
+      <div className="mb-4">
+        <h3 className="font-bold text-gray-800 mb-2">场景清单</h3>
+        <p className="text-sm text-gray-600">针对不同使用场景的专属清单</p>
+      </div>
+
+      <div className="space-y-3">
+        {scenarioLists.map((list) => (
+          <div key={list.id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="text-4xl">{list.icon}</div>
+              <div className="flex-1">
+                <div className="font-bold text-gray-800 mb-1">{list.title}</div>
+                <div className="text-xs text-gray-600">{list.desc}</div>
+                <div className="flex items-center gap-2 mt-2">
+                  <Users className="w-3 h-3 text-gray-500" />
+                  <span className="text-xs text-gray-500">{list.userCount.toLocaleString()}人收藏</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 场景提示 */}
+            <div className="bg-blue-50 rounded-xl p-3 mb-3">
+              <div className="text-xs text-blue-800 font-semibold mb-2">💡 选购建议</div>
+              <div className="space-y-1">
+                {list.tips.map((tip, idx) => (
+                  <div key={idx} className="text-xs text-gray-700 flex items-start gap-1">
+                    <CheckCircle className="w-3 h-3 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>{tip}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <button className="w-full bg-blue-500 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2">
+              查看完整清单
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderMyListsTab = () => (
+    <div className="p-4">
+      {/* 创建新清单按钮 */}
+      <button className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-2xl p-4 mb-4 flex items-center justify-center gap-2 shadow-lg">
+        <Plus className="w-5 h-5" />
+        <span className="font-bold">创建新清单</span>
+      </button>
+
+      {/* 我的清单列表 */}
+      {myLists.length > 0 ? (
+        <div className="space-y-3">
+          {myLists.map((list) => (
+            <div key={list.id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-200">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1">
+                  <div className="font-bold text-gray-800 mb-1">{list.title}</div>
+                  <div className="text-xs text-gray-500">更新于 {list.updatedAt}</div>
+                </div>
+                <button className="text-gray-400">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* 清单统计 */}
+              <div className="grid grid-cols-3 gap-3 mb-3">
+                <div className="bg-gray-50 rounded-lg p-2 text-center">
+                  <div className="text-lg font-bold text-gray-800">{list.itemCount}</div>
+                  <div className="text-xs text-gray-600">项物品</div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-2 text-center">
+                  <div className="text-lg font-bold text-green-600">{list.checkedCount}</div>
+                  <div className="text-xs text-gray-600">已购买</div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-2 text-center">
+                  <div className="text-lg font-bold text-red-500">¥{list.totalPrice}</div>
+                  <div className="text-xs text-gray-600">总价</div>
+                </div>
+              </div>
+
+              {/* 进度条 */}
+              <div className="mb-3">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs text-gray-600">完成度</span>
+                  <span className="text-xs font-semibold text-blue-600">
+                    {Math.round((list.checkedCount / list.itemCount) * 100)}%
+                  </span>
+                </div>
+                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-blue-500 to-purple-500"
+                    style={{ width: `${(list.checkedCount / list.itemCount) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              {/* 操作按钮 */}
+              <div className="flex gap-2">
+                <button className="flex-1 bg-blue-500 text-white py-2 rounded-lg text-sm font-medium">
+                  继续编辑
+                </button>
+                <button className="px-4 py-2 border border-gray-300 rounded-lg text-sm">
+                  <Share2 className="w-4 h-4 text-gray-600" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-12">
+          <div className="text-6xl mb-4">📋</div>
+          <div className="text-gray-600 mb-2">还没有创建清单</div>
+          <div className="text-sm text-gray-500">点击上方按钮创建你的第一个清单</div>
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="max-w-md mx-auto bg-gray-50 min-h-screen flex flex-col">
+      {/* 顶部导航 */}
+      <div className="bg-white px-4 py-3 flex items-center justify-between shadow-sm sticky top-0 z-50">
+        <button className="flex items-center gap-2">
+          <ArrowLeft className="w-5 h-5" />
+          <span className="font-semibold">清单工具</span>
+        </button>
+        <button className="text-blue-600 text-sm font-medium">
+          使用指南
+        </button>
+      </div>
+
+      {/* Tab导航 */}
+      <div className="bg-white px-4 flex gap-6 border-b sticky top-14 z-40">
+        <button
+          onClick={() => setActiveTab('official')}
+          className={`pb-3 font-medium transition-all ${
+            activeTab === 'official'
+              ? 'text-blue-600 border-b-2 border-blue-600'
+              : 'text-gray-600'
+          }`}
+        >
+          官方清单
+        </button>
+        <button
+          onClick={() => setActiveTab('scenario')}
+          className={`pb-3 font-medium transition-all ${
+            activeTab === 'scenario'
+              ? 'text-blue-600 border-b-2 border-blue-600'
+              : 'text-gray-600'
+          }`}
+        >
+          场景清单
+        </button>
+        <button
+          onClick={() => setActiveTab('my')}
+          className={`pb-3 font-medium transition-all ${
+            activeTab === 'my'
+              ? 'text-blue-600 border-b-2 border-blue-600'
+              : 'text-gray-600'
+          }`}
+        >
+          我的清单({myLists.length})
+        </button>
+      </div>
+
+      {/* 内容区域 */}
+      <div className="flex-1 overflow-y-auto pb-4">
+        {activeTab === 'official' && renderOfficialTab()}
+        {activeTab === 'scenario' && renderScenarioTab()}
+        {activeTab === 'my' && renderMyListsTab()}
+      </div>
+    </div>
+  );
+};
+
+export default ChecklistPage;
