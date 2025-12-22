@@ -1,0 +1,602 @@
+import React, { useState } from 'react';
+import { ArrowLeft, X, Camera, ChevronRight, Star, HelpCircle, AlertCircle, CheckCircle, Upload, Search } from 'lucide-react';
+
+const ReviewPublishPage = () => {
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+    product: null,
+    useDays: '',
+    babyAge: '3个月',
+    rating: null,
+    dimensions: {
+      safety: 0,
+      effectiveness: 0,
+      acceptance: 0,
+      value: 0,
+      durability: 0
+    },
+    summary: '',
+    detail: '',
+    photos: [],
+    tags: [],
+    replaceFrom: '',
+    replaceReason: '',
+    stillUsing: null,
+    wouldRepurchase: null
+  });
+
+  const searchResults = [
+    { id: 1, name: 'Comotomo可么多么硅胶奶瓶 250ml', brand: 'Comotomo', image: '🍼' },
+    { id: 2, name: 'Dr.Brown布朗博士防胀气奶瓶', brand: 'Dr.Brown', image: '🍼' },
+    { id: 3, name: 'NUK自然实感宽口径奶瓶', brand: 'NUK', image: '🍼' }
+  ];
+
+  const useDurationOptions = [
+    { value: '7', label: '1周以内', badge: '新手' },
+    { value: '30', label: '1个月', badge: '体验期' },
+    { value: '90', label: '3个月', badge: '长期' },
+    { value: '180', label: '半年+', badge: '资深' }
+  ];
+
+  const ratingOptions = [
+    { value: 'recommend', label: '推荐', color: 'bg-green-500', icon: '👍' },
+    { value: 'not-recommend', label: '不推荐', color: 'bg-red-500', icon: '👎' },
+    { value: 'optional', label: '可选', color: 'bg-gray-500', icon: '🤷' }
+  ];
+
+  const quickTags = {
+    positive: ['防胀气有效', '易清洗', '宝宝接受度高', '质量好', '性价比高', '耐用'],
+    negative: ['胀气严重', '清洗麻烦', '宝宝不接受', '容易坏', '价格贵', '漏奶']
+  };
+
+  const handleSelectProduct = (product) => {
+    setFormData({ ...formData, product });
+    setStep(2);
+  };
+
+  const handleDimensionScore = (dimension, score) => {
+    setFormData({
+      ...formData,
+      dimensions: { ...formData.dimensions, [dimension]: score }
+    });
+  };
+
+  const toggleTag = (tag) => {
+    const tags = formData.tags.includes(tag)
+      ? formData.tags.filter(t => t !== tag)
+      : [...formData.tags, tag];
+    setFormData({ ...formData, tags });
+  };
+
+  const renderStep1 = () => (
+    <div className="p-4">
+      <div className="mb-4">
+        <h2 className="text-xl font-bold text-gray-800 mb-2">选择产品</h2>
+        <p className="text-sm text-gray-600">搜索你要评价的产品</p>
+      </div>
+
+      <div className="relative mb-4">
+        <Search className="w-5 h-5 text-gray-400 absolute left-3 top-3" />
+        <input
+          type="text"
+          placeholder="输入产品名称搜索..."
+          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500"
+        />
+      </div>
+
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-4">
+        <div className="flex items-start gap-2">
+          <HelpCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+          <div className="text-xs text-blue-800">
+            <div className="font-semibold mb-1">评价奖励</div>
+            <div>• 使用30天以上评价权重更高</div>
+            <div>• 优质评价可获得额外积分</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        {searchResults.map((product) => (
+          <button
+            key={product.id}
+            onClick={() => handleSelectProduct(product)}
+            className="w-full bg-white rounded-xl p-3 border border-gray-200 hover:border-blue-500 transition-all text-left"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-3xl">
+                {product.image}
+              </div>
+              <div className="flex-1">
+                <div className="text-xs text-gray-500 mb-1">{product.brand}</div>
+                <div className="font-medium text-gray-800 text-sm">{product.name}</div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-gray-400" />
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderStep2 = () => (
+    <div className="p-4">
+      <div className="mb-4">
+        <h2 className="text-xl font-bold text-gray-800 mb-2">基础信息</h2>
+        <p className="text-sm text-gray-600">这些信息帮助其他宝妈判断参考价值</p>
+      </div>
+
+      {formData.product && (
+        <div className="bg-gray-50 rounded-xl p-3 mb-4 border border-gray-200">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-2xl">
+              {formData.product.image}
+            </div>
+            <div className="flex-1">
+              <div className="text-xs text-gray-500">{formData.product.brand}</div>
+              <div className="font-medium text-sm text-gray-800">{formData.product.name}</div>
+            </div>
+            <button onClick={() => setStep(1)} className="text-blue-600 text-sm">
+              更换
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-3">
+          <label className="font-semibold text-gray-800">使用时长</label>
+          <span className="text-red-500">*</span>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          {useDurationOptions.map((option) => (
+            <button
+              key={option.value}
+              onClick={() => setFormData({ ...formData, useDays: option.value })}
+              className={`p-3 rounded-xl border-2 transition-all ${
+                formData.useDays === option.value
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-200 bg-white'
+              }`}
+            >
+              <div className="font-semibold text-gray-800 mb-1">{option.label}</div>
+              <div className="text-xs text-blue-600">{option.badge}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-3">
+          <label className="font-semibold text-gray-800">宝宝月龄</label>
+          <span className="text-red-500">*</span>
+        </div>
+        <div className="bg-gray-50 rounded-xl p-3 border border-gray-200">
+          <div className="flex items-center justify-between">
+            <span className="text-gray-800">使用时宝宝</span>
+            <button className="text-blue-600 font-semibold">
+              {formData.babyAge} →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-3">
+          <label className="font-semibold text-gray-800">购买凭证</label>
+          <span className="text-xs text-gray-500">选填</span>
+        </div>
+        <button className="w-full border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-blue-500 transition-all">
+          <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+          <div className="text-sm text-gray-600">上传订单截图</div>
+          <div className="text-xs text-gray-400 mt-1">获得认证徽章</div>
+        </button>
+      </div>
+
+      <button
+        onClick={() => setStep(3)}
+        disabled={!formData.useDays}
+        className={`w-full py-3 rounded-xl font-semibold ${
+          formData.useDays
+            ? 'bg-blue-500 text-white'
+            : 'bg-gray-200 text-gray-400'
+        }`}
+      >
+        下一步
+      </button>
+    </div>
+  );
+
+  const renderStep3 = () => (
+    <div className="p-4">
+      <div className="mb-4">
+        <h2 className="text-xl font-bold text-gray-800 mb-2">产品评分</h2>
+        <p className="text-sm text-gray-600">分维度评分更有参考价值</p>
+      </div>
+
+      <div className="mb-6">
+        <div className="flex items-center gap-2 mb-3">
+          <label className="font-semibold text-gray-800">你的态度</label>
+          <span className="text-red-500">*</span>
+        </div>
+        <div className="grid grid-cols-3 gap-3">
+          {ratingOptions.map((option) => (
+            <button
+              key={option.value}
+              onClick={() => setFormData({ ...formData, rating: option.value })}
+              className={`p-4 rounded-xl border-2 transition-all ${
+                formData.rating === option.value
+                  ? `${option.color} text-white`
+                  : 'border-gray-200 bg-white text-gray-800'
+              }`}
+            >
+              <div className="text-3xl mb-2">{option.icon}</div>
+              <div className="font-semibold">{option.label}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-4 mb-6">
+        {[
+          { key: 'safety', label: '安全性' },
+          { key: 'effectiveness', label: '实用性' },
+          { key: 'acceptance', label: '宝宝接受度' },
+          { key: 'value', label: '性价比' },
+          { key: 'durability', label: '耐用性' }
+        ].map((dimension) => (
+          <div key={dimension.key}>
+            <div className="flex items-center justify-between mb-2">
+              <div className="font-medium text-gray-800">{dimension.label}</div>
+              <div className="text-lg font-bold text-blue-600">
+                {formData.dimensions[dimension.key]}.0
+              </div>
+            </div>
+            <div className="flex gap-2">
+              {[1, 2, 3, 4, 5].map((score) => (
+                <button
+                  key={score}
+                  onClick={() => handleDimensionScore(dimension.key, score)}
+                  className="flex-1"
+                >
+                  <Star
+                    className={`w-8 h-8 mx-auto ${
+                      score <= formData.dimensions[dimension.key]
+                        ? 'fill-yellow-400 text-yellow-400'
+                        : 'text-gray-300'
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <button
+        onClick={() => setStep(4)}
+        disabled={!formData.rating}
+        className={`w-full py-3 rounded-xl font-semibold ${
+          formData.rating
+            ? 'bg-blue-500 text-white'
+            : 'bg-gray-200 text-gray-400'
+        }`}
+      >
+        下一步
+      </button>
+    </div>
+  );
+
+  const renderStep4 = () => (
+    <div className="p-4">
+      <div className="mb-4">
+        <h2 className="text-xl font-bold text-gray-800 mb-2">详细评价</h2>
+        <p className="text-sm text-gray-600">分享你的真实体验</p>
+      </div>
+
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-3">
+          <label className="font-semibold text-gray-800">一句话总结</label>
+          <span className="text-red-500">*</span>
+        </div>
+        <input
+          type="text"
+          maxLength={50}
+          value={formData.summary}
+          onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
+          placeholder="例如：防胀气有效，宝宝接受度高"
+          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500"
+        />
+        <div className="text-xs text-gray-400 text-right mt-1">
+          {formData.summary.length}/50
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-3">
+          <label className="font-semibold text-gray-800">详细评价</label>
+          <span className="text-red-500">*</span>
+        </div>
+        <textarea
+          value={formData.detail}
+          onChange={(e) => setFormData({ ...formData, detail: e.target.value })}
+          placeholder="分享使用感受、宝宝反应、优缺点..."
+          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 h-32 resize-none"
+        />
+        <div className="text-xs text-gray-400 text-right mt-1">
+          {formData.detail.length}/500
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-3">
+          <label className="font-semibold text-gray-800">上传图片</label>
+          <span className="text-xs text-gray-500">最多9张</span>
+        </div>
+        <div className="grid grid-cols-3 gap-3">
+          {formData.photos.length < 9 && (
+            <button className="aspect-square border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center hover:border-blue-500 transition-all">
+              <Camera className="w-6 h-6 text-gray-400 mb-1" />
+              <span className="text-xs text-gray-400">添加</span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-3">
+          <label className="font-semibold text-gray-800">快速标签</label>
+        </div>
+        <div className="space-y-3">
+          <div>
+            <div className="text-xs text-green-700 mb-2">优点</div>
+            <div className="flex flex-wrap gap-2">
+              {quickTags.positive.map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => toggleTag(tag)}
+                  className={`px-3 py-1 rounded-full text-xs transition-all ${
+                    formData.tags.includes(tag)
+                      ? 'bg-green-500 text-white'
+                      : 'bg-green-50 text-green-700'
+                  }`}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <div className="text-xs text-red-700 mb-2">缺点</div>
+            <div className="flex flex-wrap gap-2">
+              {quickTags.negative.map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => toggleTag(tag)}
+                  className={`px-3 py-1 rounded-full text-xs transition-all ${
+                    formData.tags.includes(tag)
+                      ? 'bg-red-500 text-white'
+                      : 'bg-red-50 text-red-700'
+                  }`}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button
+        onClick={() => setStep(5)}
+        disabled={formData.summary.length < 10 || formData.detail.length < 50}
+        className={`w-full py-3 rounded-xl font-semibold ${
+          formData.summary.length >= 10 && formData.detail.length >= 50
+            ? 'bg-blue-500 text-white'
+            : 'bg-gray-200 text-gray-400'
+        }`}
+      >
+        下一步
+      </button>
+    </div>
+  );
+
+  const renderStep5 = () => (
+    <div className="p-4">
+      <div className="mb-4">
+        <h2 className="text-xl font-bold text-gray-800 mb-2">关键信息</h2>
+        <p className="text-sm text-gray-600">可跳过</p>
+      </div>
+
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-3">
+          <label className="font-semibold text-gray-800">是否从其他产品换过来</label>
+        </div>
+        <div className="space-y-3">
+          <button
+            onClick={() => setFormData({ ...formData, replaceFrom: 'yes' })}
+            className={`w-full p-3 rounded-xl border-2 text-left ${
+              formData.replaceFrom === 'yes'
+                ? 'border-blue-500 bg-blue-50'
+                : 'border-gray-200 bg-white'
+            }`}
+          >
+            是，我之前用过其他产品
+          </button>
+          {formData.replaceFrom === 'yes' && (
+            <div className="space-y-2">
+              <input
+                type="text"
+                placeholder="之前用的什么？"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl"
+              />
+              <input
+                type="text"
+                placeholder="为什么换？"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl"
+              />
+            </div>
+          )}
+          <button
+            onClick={() => setFormData({ ...formData, replaceFrom: 'no' })}
+            className={`w-full p-3 rounded-xl border-2 text-left ${
+              formData.replaceFrom === 'no'
+                ? 'border-blue-500 bg-blue-50'
+                : 'border-gray-200 bg-white'
+            }`}
+          >
+            不是，第一次用
+          </button>
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-3">
+          <label className="font-semibold text-gray-800">现在还在用吗</label>
+        </div>
+        <div className="space-y-2">
+          <button
+            onClick={() => setFormData({ ...formData, stillUsing: true })}
+            className={`w-full p-3 rounded-xl border-2 text-left ${
+              formData.stillUsing === true
+                ? 'border-green-500 bg-green-50'
+                : 'border-gray-200 bg-white'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-green-600" />
+              <span>是，仍在使用</span>
+            </div>
+          </button>
+          <button
+            onClick={() => setFormData({ ...formData, stillUsing: false })}
+            className={`w-full p-3 rounded-xl border-2 text-left ${
+              formData.stillUsing === false
+                ? 'border-red-500 bg-red-50'
+                : 'border-gray-200 bg-white'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-red-600" />
+              <span>不用了，已弃用</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <button
+          onClick={() => setStep(6)}
+          className="w-full bg-blue-500 text-white py-3 rounded-xl font-semibold"
+        >
+          继续
+        </button>
+        <button
+          onClick={() => setStep(6)}
+          className="w-full text-gray-600 py-2"
+        >
+          跳过
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderStep6 = () => (
+    <div className="p-4">
+      <div className="mb-4">
+        <h2 className="text-xl font-bold text-gray-800 mb-2">预览</h2>
+      </div>
+
+      <div className="bg-white rounded-2xl p-4 border border-gray-200 mb-4">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="text-2xl">👩</div>
+            <div>
+              <div className="font-medium text-sm">你</div>
+              <div className="text-xs text-gray-500">
+                {formData.babyAge}宝宝 · 已使用 {formData.useDays} 天
+              </div>
+            </div>
+          </div>
+          <div className={`px-3 py-1 rounded-lg text-xs font-medium ${
+            formData.rating === 'recommend' 
+              ? 'bg-green-100 text-green-700'
+              : 'bg-red-100 text-red-700'
+          }`}>
+            {formData.rating === 'recommend' ? '推荐' : '不推荐'}
+          </div>
+        </div>
+
+        <div className="bg-blue-50 p-2 rounded-lg mb-3 text-sm">
+          💬 {formData.summary}
+        </div>
+
+        <div className="text-sm text-gray-600 mb-3">
+          {formData.detail}
+        </div>
+
+        {formData.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {formData.tags.map((tag, idx) => (
+              <span key={idx} className="text-xs px-2 py-1 bg-gray-100 rounded">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="bg-yellow-50 rounded-xl p-4 mb-4 border border-yellow-200">
+        <div className="font-bold text-gray-800 mb-2">🎁 获得奖励</div>
+        <div className="space-y-1 text-sm">
+          <div>• 发布评价：+50积分</div>
+          <div className="pt-2 border-t font-bold text-orange-600">
+            共计：+50积分
+          </div>
+        </div>
+      </div>
+
+      <button className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-4 rounded-xl font-bold">
+        发布评价
+      </button>
+    </div>
+  );
+
+  return (
+    <div className="max-w-md mx-auto bg-gray-50 min-h-screen flex flex-col">
+      <div className="bg-white px-4 py-3 flex items-center justify-between shadow-sm sticky top-0 z-50">
+        <button className="flex items-center gap-2">
+          <ArrowLeft className="w-5 h-5" />
+          <span className="font-semibold">发布评价</span>
+        </button>
+        <button className="text-gray-600 text-sm">
+          草稿
+        </button>
+      </div>
+
+      {step < 6 && (
+        <div className="bg-white px-4 py-3 border-b">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-gray-600">第 {step} 步，共 5 步</span>
+          </div>
+          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all"
+              style={{ width: `${(step / 5) * 100}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      <div className="flex-1 overflow-y-auto">
+        {step === 1 && renderStep1()}
+        {step === 2 && renderStep2()}
+        {step === 3 && renderStep3()}
+        {step === 4 && renderStep4()}
+        {step === 5 && renderStep5()}
+        {step === 6 && renderStep6()}
+      </div>
+    </div>
+  );
+};
+
+export default ReviewPublishPage;
