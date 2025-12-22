@@ -1,0 +1,435 @@
+import React, { useState } from 'react';
+import { ArrowLeft, ChevronRight, CheckCircle, AlertCircle, HelpCircle, TrendingUp, Users, Star, Sparkles, Filter, Heart } from 'lucide-react';
+
+const HowToChoosePage = () => {
+  const [step, setStep] = useState(1);
+  const [selections, setSelections] = useState({
+    category: '',
+    problem: '',
+    budget: ''
+  });
+
+  // 产品分类（第一步）
+  const categories = [
+    { id: 'bottle', name: '奶瓶', icon: '🍼', hot: true },
+    { id: 'nipple', name: '奶嘴', icon: '🍭' },
+    { id: 'bowl', name: '辅食碗', icon: '🥣' },
+    { id: 'warmer', name: '温奶器', icon: '🔥' },
+    { id: 'sterilizer', name: '消毒器', icon: '💨' },
+    { id: 'brush', name: '奶瓶刷', icon: '🧹' }
+  ];
+
+  // 常见问题（第二步）
+  const problems = [
+    { 
+      id: 'colic', 
+      title: '胀气严重', 
+      desc: '宝宝喝奶后经常胀气哭闹',
+      icon: '😣',
+      effectiveness: '76%有效率'
+    },
+    { 
+      id: 'refuse', 
+      title: '拒绝奶瓶', 
+      desc: '宝宝不接受奶瓶奶嘴',
+      icon: '😤',
+      effectiveness: '68%接受度'
+    },
+    { 
+      id: 'leak', 
+      title: '漏奶严重', 
+      desc: '奶瓶经常漏奶弄湿衣服',
+      icon: '💧',
+      effectiveness: '92%防漏'
+    },
+    { 
+      id: 'first-time', 
+      title: '刚开始用', 
+      desc: '第一次给宝宝选奶瓶',
+      icon: '🆕',
+      effectiveness: '新手推荐'
+    }
+  ];
+
+  // 预算范围（第三步）
+  const budgets = [
+    { id: 'low', range: '50元以下', icon: '💰' },
+    { id: 'mid', range: '50-150元', icon: '💰💰', popular: true },
+    { id: 'high', range: '150-300元', icon: '💰💰💰' },
+    { id: 'premium', range: '300元以上', icon: '💎' }
+  ];
+
+  // 推荐结果（模拟数据）
+  const recommendations = [
+    {
+      id: 1,
+      name: 'Comotomo可么多么硅胶奶瓶',
+      brand: 'Comotomo',
+      image: '🍼',
+      price: 128,
+      originalPrice: 189,
+      rating: 4.8,
+      reviewCount: 234,
+      matchScore: 95,
+      reasons: [
+        '76%的同月龄妈妈推荐',
+        '防胀气有效率89%',
+        '宝宝接受度高达92%'
+      ],
+      tags: ['防胀气', '柔软仿母乳', '易清洗'],
+      userCount: 156,
+      sameAgeRate: 76
+    },
+    {
+      id: 2,
+      name: 'Dr.Brown布朗博士防胀气奶瓶',
+      brand: 'Dr.Brown',
+      image: '🍼',
+      price: 98,
+      originalPrice: 158,
+      rating: 4.6,
+      reviewCount: 189,
+      matchScore: 88,
+      reasons: [
+        '专利防胀气导管设计',
+        '医生推荐率高',
+        '适合胀气体质宝宝'
+      ],
+      tags: ['防胀气', '医生推荐', '性价比高'],
+      userCount: 134,
+      sameAgeRate: 68
+    },
+    {
+      id: 3,
+      name: 'NUK自然实感宽口径奶瓶',
+      brand: 'NUK',
+      image: '🍼',
+      price: 78,
+      originalPrice: 128,
+      rating: 4.5,
+      reviewCount: 167,
+      matchScore: 82,
+      reasons: [
+        '德国品牌，品质保障',
+        '宽口设计易清洗',
+        '价格适中性价比好'
+      ],
+      tags: ['宽口径', '易清洗', '实惠'],
+      userCount: 98,
+      sameAgeRate: 62
+    }
+  ];
+
+  const handleSelect = (key, value) => {
+    setSelections({ ...selections, [key]: value });
+  };
+
+  const renderStep1 = () => (
+    <div className="p-4">
+      <div className="mb-4">
+        <h2 className="text-xl font-bold text-gray-800 mb-2">选择产品类型</h2>
+        <p className="text-sm text-gray-500">从奶瓶开始，逐步拓展到其他品类</p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        {categories.map((cat) => (
+          <button
+            key={cat.id}
+            onClick={() => {
+              handleSelect('category', cat.id);
+              setStep(2);
+            }}
+            className={`relative bg-white rounded-xl p-4 border-2 transition-all ${
+              selections.category === cat.id
+                ? 'border-blue-500 bg-blue-50'
+                : 'border-gray-200 hover:border-blue-300'
+            }`}
+          >
+            {cat.hot && (
+              <div className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                热门
+              </div>
+            )}
+            <div className="text-4xl mb-2">{cat.icon}</div>
+            <div className="font-semibold text-gray-800">{cat.name}</div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderStep2 = () => (
+    <div className="p-4">
+      <div className="mb-4">
+        <h2 className="text-xl font-bold text-gray-800 mb-2">你遇到什么问题？</h2>
+        <p className="text-sm text-gray-500">选择最困扰你的问题，我们推荐解决方案</p>
+      </div>
+
+      <div className="space-y-3">
+        {problems.map((problem) => (
+          <button
+            key={problem.id}
+            onClick={() => {
+              handleSelect('problem', problem.id);
+              setStep(3);
+            }}
+            className={`w-full bg-white rounded-xl p-4 border-2 transition-all text-left ${
+              selections.problem === problem.id
+                ? 'border-blue-500 bg-blue-50'
+                : 'border-gray-200 hover:border-blue-300'
+            }`}
+          >
+            <div className="flex items-start gap-3">
+              <div className="text-3xl">{problem.icon}</div>
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-semibold text-gray-800">{problem.title}</span>
+                  <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+                    {problem.effectiveness}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600">{problem.desc}</p>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      <button
+        onClick={() => setStep(3)}
+        className="w-full mt-4 text-gray-600 text-sm py-2"
+      >
+        跳过，直接看推荐 →
+      </button>
+    </div>
+  );
+
+  const renderStep3 = () => (
+    <div className="p-4">
+      <div className="mb-4">
+        <h2 className="text-xl font-bold text-gray-800 mb-2">预算范围</h2>
+        <p className="text-sm text-gray-500">不同价位都有好选择</p>
+      </div>
+
+      <div className="space-y-3">
+        {budgets.map((budget) => (
+          <button
+            key={budget.id}
+            onClick={() => {
+              handleSelect('budget', budget.id);
+              setStep(4);
+            }}
+            className={`w-full bg-white rounded-xl p-4 border-2 transition-all flex items-center justify-between ${
+              selections.budget === budget.id
+                ? 'border-blue-500 bg-blue-50'
+                : 'border-gray-200 hover:border-blue-300'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <div className="text-2xl">{budget.icon}</div>
+              <span className="font-semibold text-gray-800">{budget.range}</span>
+            </div>
+            {budget.popular && (
+              <span className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                最多选择
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+
+      <button
+        onClick={() => setStep(4)}
+        className="w-full mt-4 text-gray-600 text-sm py-2"
+      >
+        预算不限，看所有推荐 →
+      </button>
+    </div>
+  );
+
+  const renderResults = () => (
+    <div className="flex-1 overflow-y-auto">
+      {/* 筛选条件总结 */}
+      <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 border-b">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-bold text-gray-800">为你推荐</h2>
+          <button className="text-sm text-blue-600 flex items-center gap-1">
+            <Filter className="w-4 h-4" />
+            筛选
+          </button>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <span className="text-xs bg-white px-3 py-1 rounded-full text-gray-700">
+            3-6个月宝宝
+          </span>
+          <span className="text-xs bg-white px-3 py-1 rounded-full text-gray-700">
+            防胀气问题
+          </span>
+          <span className="text-xs bg-white px-3 py-1 rounded-full text-gray-700">
+            50-150元预算
+          </span>
+        </div>
+        <div className="mt-2 text-sm text-gray-600">
+          找到 <span className="text-blue-600 font-semibold">3个</span> 符合条件的产品
+        </div>
+      </div>
+
+      {/* 推荐产品列表 */}
+      <div className="p-4 space-y-4">
+        {recommendations.map((product, index) => (
+          <div key={product.id} className="bg-white rounded-2xl p-4 shadow-md border border-gray-200">
+            {/* 匹配度标签 */}
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <span className="text-lg font-bold text-blue-600">#{index + 1}</span>
+                <div className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                  product.matchScore >= 90 
+                    ? 'bg-green-100 text-green-700'
+                    : product.matchScore >= 80
+                    ? 'bg-blue-100 text-blue-700'
+                    : 'bg-gray-100 text-gray-700'
+                }`}>
+                  <Sparkles className="w-3 h-3 inline mr-1" />
+                  匹配度 {product.matchScore}%
+                </div>
+              </div>
+              <button className="text-gray-400">
+                <Heart className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* 产品信息卡片 */}
+            <div className="flex gap-3 mb-3">
+              <div className="w-24 h-24 bg-gray-100 rounded-xl flex items-center justify-center text-5xl flex-shrink-0 border border-gray-200">
+                {product.image}
+              </div>
+              <div className="flex-1">
+                <div className="text-xs text-gray-500 mb-1">{product.brand}</div>
+                <div className="font-semibold text-gray-800 mb-2 line-clamp-2">
+                  {product.name}
+                </div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-red-500 font-bold text-lg">¥{product.price}</span>
+                  <span className="text-xs text-gray-400 line-through">¥{product.originalPrice}</span>
+                  <span className="text-xs text-red-500 bg-red-50 px-2 py-0.5 rounded">
+                    省{product.originalPrice - product.price}元
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 text-xs text-gray-500">
+                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                  <span className="font-semibold">{product.rating}</span>
+                  <span>•</span>
+                  <span>{product.reviewCount}条评价</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 推荐理由 */}
+            <div className="bg-blue-50 rounded-xl p-3 mb-3">
+              <div className="text-xs text-blue-800 font-semibold mb-2">💡 为什么推荐</div>
+              <div className="space-y-1">
+                {product.reasons.map((reason, idx) => (
+                  <div key={idx} className="flex items-start gap-2 text-xs text-gray-700">
+                    <CheckCircle className="w-3 h-3 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>{reason}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 同月龄数据 */}
+            <div className="flex items-center gap-4 mb-3 text-xs">
+              <div className="flex items-center gap-1 text-gray-600">
+                <Users className="w-4 h-4" />
+                <span>{product.userCount}位宝妈使用</span>
+              </div>
+              <div className="flex items-center gap-1 text-green-600">
+                <TrendingUp className="w-4 h-4" />
+                <span>同月龄推荐率{product.sameAgeRate}%</span>
+              </div>
+            </div>
+
+            {/* 标签 */}
+            <div className="flex flex-wrap gap-2 mb-3">
+              {product.tags.map((tag, idx) => (
+                <span key={idx} className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            {/* 操作按钮 */}
+            <div className="flex gap-2">
+              <button className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-xl font-semibold text-sm">
+                查看详情
+              </button>
+              <button className="px-4 bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold text-sm">
+                对比
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 查看更多 */}
+      <div className="p-4 text-center">
+        <button className="text-sm text-gray-600">
+          查看更多产品 →
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="max-w-md mx-auto bg-gray-50 h-screen flex flex-col">
+      {/* 顶部导航 */}
+      <div className="bg-white px-4 py-3 flex items-center justify-between shadow-sm">
+        <button className="flex items-center gap-2 text-gray-800">
+          <ArrowLeft className="w-5 h-5" />
+          <span className="font-semibold">怎么选</span>
+        </button>
+        <div className="flex items-center gap-2">
+          <HelpCircle className="w-5 h-5 text-gray-400" />
+        </div>
+      </div>
+
+      {/* 进度条 */}
+      {step < 4 && (
+        <div className="bg-white px-4 py-3 border-b">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-gray-600">第 {step} 步，共 3 步</span>
+            <span className="text-xs text-gray-500">可随时跳过</span>
+          </div>
+          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300"
+              style={{ width: `${(step / 3) * 100}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* 内容区域 */}
+      <div className="flex-1 overflow-y-auto">
+        {step === 1 && renderStep1()}
+        {step === 2 && renderStep2()}
+        {step === 3 && renderStep3()}
+        {step === 4 && renderResults()}
+      </div>
+
+      {/* 底部操作栏（非结果页显示） */}
+      {step > 1 && step < 4 && (
+        <div className="bg-white border-t px-4 py-3">
+          <button
+            onClick={() => setStep(step - 1)}
+            className="w-full py-3 text-gray-600 border border-gray-300 rounded-xl font-semibold"
+          >
+            上一步
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default HowToChoosePage;
