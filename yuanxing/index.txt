@@ -1,0 +1,468 @@
+import React, { useState } from 'react';
+import { Search, Bell, HelpCircle, BookOpen, CheckCircle, AlertTriangle, ClipboardList, ChevronRight, Star, Heart, MessageSquare, Share2, Users, Clock, TrendingDown } from 'lucide-react';
+
+const BaoMaShuoApp = () => {
+  const [activeTab, setActiveTab] = useState('decision');
+  const [babyAge, setBabyAge] = useState('3-6个月');
+
+  // 五大决策入口
+  const decisionEntries = [
+    {
+      icon: HelpCircle,
+      title: '怎么选',
+      subtitle: '选前决策',
+      desc: '同月龄真实反馈',
+      color: 'from-blue-500 to-cyan-500',
+      badge: '最高频'
+    },
+    {
+      icon: BookOpen,
+      title: '怎么用',
+      subtitle: '使用过程',
+      desc: '避免错误用法',
+      color: 'from-purple-500 to-pink-500'
+    },
+    {
+      icon: CheckCircle,
+      title: '值不值',
+      subtitle: '真实评价',
+      desc: '用过的才知道',
+      color: 'from-green-500 to-emerald-500',
+      badge: '最真实'
+    },
+    {
+      icon: AlertTriangle,
+      title: '避坑榜',
+      subtitle: '负反馈',
+      desc: '哪些别买',
+      color: 'from-red-500 to-orange-500',
+      badge: '独家'
+    }
+  ];
+
+  // 避坑警示
+  const pitfallAlerts = [
+    {
+      product: 'XX品牌防胀气奶瓶',
+      issue: '32%的3-6个月宝宝仍然胀气严重',
+      userCount: 78,
+      severity: 'high'
+    },
+    {
+      product: 'YY电动吸奶器',
+      issue: '使用1个月后故障率高达45%',
+      userCount: 124,
+      severity: 'high'
+    }
+  ];
+
+  // 热门决策问题
+  const hotQuestions = [
+    {
+      category: '奶瓶怎么选',
+      question: 'PPSU和玻璃奶瓶怎么选？',
+      answers: 234,
+      realUsers: 156,
+      age: '0-3个月'
+    },
+    {
+      category: '奶嘴怎么选',
+      question: '宝宝拒绝奶嘴怎么办？',
+      answers: 189,
+      realUsers: 123,
+      age: '3-6个月'
+    }
+  ];
+
+  // 真实使用反馈
+  const realFeedbacks = [
+    {
+      id: 1,
+      user: { 
+        name: '小雨妈妈', 
+        avatar: '👩', 
+        level: 'Lv5', 
+        age: '3个月宝宝', 
+        useDays: 45 
+      },
+      product: {
+        name: 'Comotomo可么多么奶瓶',
+        brand: 'Comotomo',
+        image: '🍼',
+        price: '¥128',
+        originalPrice: '¥189',
+        rating: 4.8,
+        reviewCount: 234
+      },
+      rating: 'recommend',
+      summary: '从180ml用到现在，宝宝接受度高，没胀气',
+      detail: '用了45天，宝宝一直很喜欢，奶嘴柔软度接近母乳，转奶很顺利。清洗也方便，瓶身宽口设计...',
+      tags: ['防胀气有效', '易清洗', '宝宝接受度高'],
+      replaceFrom: 'XX品牌玻璃奶瓶',
+      replaceReason: '之前那款胀气严重',
+      stats: { helpful: 234, comments: 56 }
+    },
+    {
+      id: 2,
+      user: { 
+        name: '晴天妈妈', 
+        avatar: '👱‍♀️', 
+        level: 'Lv3', 
+        age: '5个月宝宝', 
+        useDays: 15 
+      },
+      product: {
+        name: 'babycare辅食碗',
+        brand: 'babycare',
+        image: '🥣',
+        price: '¥68',
+        originalPrice: '¥118',
+        rating: 3.2,
+        reviewCount: 189
+      },
+      rating: 'not-recommend',
+      summary: '吸盘不牢，宝宝一拉就掉，已闲置',
+      detail: '买回来用了3次就不用了，吸盘根本吸不住，宝宝一拽就掉。本来想着吸盘设计能防止打翻...',
+      tags: ['吸盘不牢', '容易打翻', '性价比低'],
+      abandoned: true,
+      stats: { helpful: 156, comments: 34 }
+    }
+  ];
+
+  // 快速工具
+  const quickTools = [
+    { emoji: '🍼', title: '3分钟选奶瓶', users: '2.3万人用过' },
+    { emoji: '📋', title: '同月龄必备清单', users: '5.6万人收藏' },
+    { emoji: '⚖️', title: '品牌对比工具', users: '1.8万人用过' }
+  ];
+
+  return (
+    <div className="max-w-md mx-auto bg-gray-50 min-h-screen flex flex-col">
+      {/* 顶部 - 强化用户身份 */}
+      <div className="bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-4 text-white sticky top-0 z-50">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <div className="text-2xl font-bold mb-1">宝妈说</div>
+            <div className="text-sm opacity-90">真实决策，不踩坑</div>
+          </div>
+          <div className="flex items-center gap-3">
+            <Search className="w-5 h-5" />
+            <div className="relative">
+              <Bell className="w-5 h-5" />
+              <div className="absolute -top-1 -right-1 bg-red-500 rounded-full w-4 h-4 text-xs flex items-center justify-center">3</div>
+            </div>
+          </div>
+        </div>
+        
+        {/* 宝宝月龄选择器 - 核心上下文 */}
+        <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="text-2xl">👶</div>
+            <div>
+              <div className="text-xs opacity-80">当前查看</div>
+              <div className="font-semibold">{babyAge} 宝宝</div>
+            </div>
+          </div>
+          <button className="bg-white/30 px-3 py-1 rounded-lg text-sm">
+            切换月龄 →
+          </button>
+        </div>
+      </div>
+
+      {/* 主内容区 */}
+      <div className="flex-1 overflow-y-auto pb-20">
+        
+        {/* 五大决策入口 */}
+        <div className="p-4">
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="font-bold text-gray-800 text-lg">我要做决策</h2>
+            <span className="text-xs text-gray-500">选择你的阶段</span>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-3 mb-3">
+            {decisionEntries.map((entry, idx) => (
+              <button
+                key={idx}
+                className="relative bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow text-left overflow-hidden"
+              >
+                <div className={`absolute top-0 right-0 w-20 h-20 bg-gradient-to-br ${entry.color} opacity-10 rounded-full -mr-8 -mt-8`}></div>
+                
+                {entry.badge && (
+                  <div className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                    {entry.badge}
+                  </div>
+                )}
+                
+                <entry.icon className={`w-8 h-8 mb-2 bg-gradient-to-br ${entry.color} text-white p-1.5 rounded-xl`} />
+                <div className="font-bold text-gray-800 mb-0.5">{entry.title}</div>
+                <div className="text-xs text-gray-500 mb-1">{entry.subtitle}</div>
+                <div className="text-xs text-gray-600">{entry.desc}</div>
+              </button>
+            ))}
+          </div>
+
+          {/* 清单工具 */}
+          <button className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 text-white rounded-2xl p-4 shadow-sm flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <ClipboardList className="w-8 h-8" />
+              <div className="text-left">
+                <div className="font-bold">清单与工具</div>
+                <div className="text-sm opacity-90">直接告诉我买什么</div>
+              </div>
+            </div>
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* 避坑警示区 */}
+        <div className="px-4 pb-4">
+          <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl p-4 border border-red-200">
+            <div className="flex items-center gap-2 mb-3">
+              <AlertTriangle className="w-5 h-5 text-red-600" />
+              <h3 className="font-bold text-gray-800">避坑警示</h3>
+              <span className="text-xs text-red-600 bg-red-100 px-2 py-0.5 rounded-full ml-auto">
+                实时更新
+              </span>
+            </div>
+            
+            {pitfallAlerts.map((alert, idx) => (
+              <div key={idx} className="bg-white rounded-xl p-3 mb-2 last:mb-0">
+                <div className="flex items-start gap-2">
+                  <TrendingDown className={`w-4 h-4 mt-0.5 flex-shrink-0 ${
+                    alert.severity === 'high' ? 'text-red-500' : 'text-orange-500'
+                  }`} />
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-sm text-gray-800 mb-1">
+                      {alert.product}
+                    </div>
+                    <div className="text-xs text-gray-600 mb-2">
+                      {alert.issue}
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <Users className="w-3 h-3" />
+                      <span>{alert.userCount}位宝妈反馈</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            
+            <button className="w-full mt-2 text-sm text-red-600 font-medium py-2">
+              查看完整避坑榜 →
+            </button>
+          </div>
+        </div>
+
+        {/* 热门决策问题 */}
+        <div className="px-4 pb-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-bold text-gray-800">同月龄都在问</h3>
+            <span className="text-xs text-gray-500">{babyAge}</span>
+          </div>
+          
+          <div className="space-y-2">
+            {hotQuestions.map((q, idx) => (
+              <div key={idx} className="bg-white rounded-xl p-4 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <HelpCircle className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs text-blue-600 mb-1">{q.category}</div>
+                    <div className="font-medium text-gray-800 mb-2">{q.question}</div>
+                    <div className="flex items-center gap-3 text-xs text-gray-500">
+                      <span className="flex items-center gap-1">
+                        <MessageSquare className="w-3 h-3" />
+                        {q.answers}个回答
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Users className="w-3 h-3" />
+                        {q.realUsers}位真实用户
+                      </span>
+                      <span className="bg-purple-100 text-purple-600 px-2 py-0.5 rounded">
+                        {q.age}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 真实使用反馈流 */}
+        <div className="px-4 pb-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-bold text-gray-800">真实使用反馈</h3>
+            <button className="text-xs text-blue-600 bg-blue-50 px-3 py-1 rounded-lg">筛选条件</button>
+          </div>
+          
+          <div className="space-y-3">
+            {realFeedbacks.map((feedback) => (
+              <div key={feedback.id} className="bg-white rounded-2xl p-4 shadow-sm">
+                {/* 用户信息 + 使用天数 */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="text-2xl">{feedback.user.avatar}</div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-sm">{feedback.user.name}</span>
+                        <span className="text-xs bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-2 py-0.5 rounded">
+                          {feedback.user.level}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <span>{feedback.user.age}</span>
+                        <span>•</span>
+                        <Clock className="w-3 h-3" />
+                        <span>已使用 {feedback.user.useDays} 天</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={`px-3 py-1 rounded-lg text-sm font-medium ${
+                    feedback.rating === 'recommend' 
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-red-100 text-red-700'
+                  }`}>
+                    {feedback.rating === 'recommend' ? '推荐' : '不推荐'}
+                  </div>
+                </div>
+
+                {/* 产品卡片 */}
+                <div className="flex gap-3 p-3 bg-gray-50 rounded-xl mb-3 border border-gray-200">
+                  <div className="w-20 h-20 bg-white rounded-lg flex items-center justify-center text-4xl flex-shrink-0 border border-gray-200">
+                    {feedback.product.image}
+                  </div>
+                  <div className="flex-1 flex flex-col justify-between">
+                    <div>
+                      <div className="text-xs text-gray-500 mb-1">{feedback.product.brand}</div>
+                      <div className="text-sm font-semibold text-gray-800 mb-1 line-clamp-2">
+                        {feedback.product.name}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-red-500 font-bold">{feedback.product.price}</span>
+                        <span className="text-xs text-gray-400 line-through">{feedback.product.originalPrice}</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                        <span>{feedback.product.rating}分</span>
+                        <span>•</span>
+                        <span>{feedback.product.reviewCount}条评价</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 一句话总结 */}
+                <div className="text-sm text-gray-700 mb-2 bg-gray-50 p-2 rounded-lg">
+                  💬 {feedback.summary}
+                </div>
+
+                {/* 详细内容 */}
+                <div className="text-sm text-gray-600 mb-3 line-clamp-2">
+                  {feedback.detail}
+                </div>
+
+                {/* 标签 */}
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {feedback.tags.map((tag, i) => (
+                    <span key={i} className={`text-xs px-2 py-1 rounded ${
+                      feedback.rating === 'recommend'
+                        ? 'bg-green-50 text-green-700'
+                        : 'bg-red-50 text-red-700'
+                    }`}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
+                {/* 替换信息 */}
+                {feedback.replaceFrom && (
+                  <div className="text-xs text-orange-600 bg-orange-50 p-2 rounded-lg mb-3">
+                    ⚠️ 从「{feedback.replaceFrom}」换过来：{feedback.replaceReason}
+                  </div>
+                )}
+
+                {/* 弃用警示 */}
+                {feedback.abandoned && (
+                  <div className="text-xs text-red-600 bg-red-50 p-2 rounded-lg mb-3">
+                    ❌ 已弃用：实际使用体验不佳
+                  </div>
+                )}
+
+                {/* 互动栏 */}
+                <div className="flex items-center justify-between pt-3 border-t">
+                  <button className="flex items-center gap-1 text-gray-600">
+                    <Star className="w-4 h-4" />
+                    <span className="text-sm">{feedback.stats.helpful}人觉得有用</span>
+                  </button>
+                  <button className="flex items-center gap-1 text-gray-600">
+                    <MessageSquare className="w-4 h-4" />
+                    <span className="text-sm">{feedback.stats.comments}</span>
+                  </button>
+                  <button className="text-blue-600 text-sm font-medium">
+                    查看详情 →
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 快速决策工具 */}
+        <div className="px-4 pb-6">
+          <h3 className="font-bold text-gray-800 mb-3">快速决策工具</h3>
+          <div className="grid grid-cols-1 gap-2">
+            {quickTools.map((tool, idx) => (
+              <button key={idx} className="bg-white rounded-xl p-4 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow">
+                <div className="flex items-center gap-3">
+                  <div className="text-3xl">{tool.emoji}</div>
+                  <div className="text-left">
+                    <div className="font-medium text-gray-800">{tool.title}</div>
+                    <div className="text-xs text-gray-500">{tool.users}</div>
+                  </div>
+                </div>
+                <ChevronRight className="w-5 h-5 text-gray-400" />
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 底部导航 */}
+      <div className="bg-white border-t px-4 py-2 flex items-center justify-around fixed bottom-0 left-0 right-0 max-w-md mx-auto z-50">
+        {[
+          { icon: HelpCircle, label: '决策', value: 'decision' },
+          { icon: AlertTriangle, label: '避坑', value: 'pitfall', badge: '新' },
+          { icon: ClipboardList, label: '清单', value: 'list' },
+          { icon: Users, label: '圈子', value: 'circle' },
+          { label: '我的', value: 'profile', isEmoji: true, emoji: '👤' },
+        ].map((item) => (
+          <button
+            key={item.value}
+            onClick={() => setActiveTab(item.value)}
+            className={`flex flex-col items-center gap-1 relative ${
+              activeTab === item.value ? 'text-blue-600' : 'text-gray-600'
+            }`}
+          >
+            {item.isEmoji ? (
+              <span className="text-2xl">{item.emoji}</span>
+            ) : (
+              <item.icon className="w-6 h-6" />
+            )}
+            <span className="text-xs">{item.label}</span>
+            {item.badge && (
+              <div className="absolute -top-1 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+                {item.badge}
+              </div>
+            )}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default BaoMaShuoApp;
