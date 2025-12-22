@@ -1,0 +1,581 @@
+import React, { useState } from 'react';
+import { ArrowLeft, Search, ChevronRight, AlertTriangle, CheckCircle, Clock, ThumbsUp, MessageSquare, Play, Book, Lightbulb, Users, TrendingUp, HelpCircle, XCircle, Zap } from 'lucide-react';
+
+const HowToUsePage = () => {
+  const [activeTab, setActiveTab] = useState('problems');
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  // 产品快速入口
+  const quickProducts = [
+    { id: 1, name: 'Comotomo奶瓶', icon: '🍼', hot: true },
+    { id: 2, name: 'Dr.Brown奶瓶', icon: '🍼' },
+    { id: 3, name: 'NUK奶嘴', icon: '🍭' },
+    { id: 4, name: '辅食碗', icon: '🥣' }
+  ];
+
+  // 常见问题分类
+  const problemCategories = [
+    {
+      id: 'colic',
+      title: '胀气问题',
+      icon: '😣',
+      count: 234,
+      severity: 'high',
+      problems: [
+        {
+          id: 1,
+          title: '宝宝喝完奶就胀气哭闹',
+          viewCount: 1234,
+          solutionCount: 45,
+          effectiveness: 89
+        },
+        {
+          id: 2,
+          title: '胀气严重，肚子鼓鼓的',
+          viewCount: 987,
+          solutionCount: 38,
+          effectiveness: 82
+        }
+      ]
+    },
+    {
+      id: 'refuse',
+      title: '拒奶问题',
+      icon: '😤',
+      count: 189,
+      severity: 'high',
+      problems: [
+        {
+          id: 3,
+          title: '宝宝不接受奶瓶奶嘴',
+          viewCount: 1567,
+          solutionCount: 67,
+          effectiveness: 76
+        },
+        {
+          id: 4,
+          title: '母乳转奶瓶困难',
+          viewCount: 892,
+          solutionCount: 34,
+          effectiveness: 68
+        }
+      ]
+    },
+    {
+      id: 'leak',
+      title: '漏奶问题',
+      icon: '💧',
+      count: 156,
+      severity: 'medium',
+      problems: [
+        {
+          id: 5,
+          title: '奶瓶接口处总是漏奶',
+          viewCount: 678,
+          solutionCount: 29,
+          effectiveness: 92
+        }
+      ]
+    },
+    {
+      id: 'clean',
+      title: '清洗问题',
+      icon: '🧹',
+      count: 134,
+      severity: 'low',
+      problems: [
+        {
+          id: 6,
+          title: '奶瓶内壁很难清洗干净',
+          viewCount: 543,
+          solutionCount: 23,
+          effectiveness: 85
+        }
+      ]
+    }
+  ];
+
+  // 使用阶段指南
+  const usageStages = [
+    {
+      id: 'first-use',
+      title: '初次使用',
+      icon: '🆕',
+      duration: '第1-7天',
+      tips: [
+        '使用前先消毒（煮沸5分钟）',
+        '先用小容量试用（150ml）',
+        '观察宝宝接受度',
+        '注意流速是否合适'
+      ],
+      commonIssues: ['宝宝不接受', '流速太快', '漏奶'],
+      userCount: 892
+    },
+    {
+      id: 'adaptation',
+      title: '适应期',
+      icon: '🔄',
+      duration: '第8-30天',
+      tips: [
+        '保持喂奶姿势正确',
+        '观察是否有胀气',
+        '定期检查奶嘴损耗',
+        '建立喂奶规律'
+      ],
+      commonIssues: ['偶尔胀气', '奶嘴老化', '清洗麻烦'],
+      userCount: 1234
+    },
+    {
+      id: 'stable',
+      title: '稳定使用',
+      icon: '✅',
+      duration: '30天以后',
+      tips: [
+        '关注宝宝成长更换容量',
+        '根据月龄更换奶嘴型号',
+        '注意产品使用寿命',
+        '考虑是否需要升级'
+      ],
+      commonIssues: ['需要换大容量', '奶嘴流速不够', '产品老化'],
+      userCount: 2156
+    }
+  ];
+
+  // 真实解决方案
+  const solutions = [
+    {
+      id: 1,
+      problem: '宝宝喝完奶就胀气哭闹',
+      user: {
+        name: '小雨妈妈',
+        avatar: '👩',
+        age: '3个月宝宝',
+        verified: true
+      },
+      solution: '我的解决方法：\n1. 换成防胀气奶瓶（Comotomo）\n2. 喂奶时保持45度角\n3. 喝完奶后竖抱拍嗝15分钟\n4. 选择慢流速奶嘴\n\n坚持一周后明显改善，现在基本不胀气了！',
+      timeUsed: '坚持1周',
+      effectiveness: '非常有效',
+      helpful: 234,
+      tried: 156,
+      tags: ['换防胀气奶瓶', '45度喂奶', '拍嗝'],
+      productUsed: 'Comotomo奶瓶',
+      video: true
+    },
+    {
+      id: 2,
+      problem: '宝宝不接受奶瓶奶嘴',
+      user: {
+        name: '晴天妈妈',
+        avatar: '👱‍♀️',
+        age: '4个月宝宝',
+        verified: true
+      },
+      solution: '分享我成功的经验：\n1. 选择仿母乳奶嘴（柔软的）\n2. 先用温水温热奶嘴\n3. 在宝宝迷糊时喂（比如快醒时）\n4. 妈妈暂时离开，让爸爸喂\n5. 不要强迫，循序渐进\n\n大概坚持了2周，宝宝就接受了！',
+      timeUsed: '坚持2周',
+      effectiveness: '比较有效',
+      helpful: 189,
+      tried: 123,
+      tags: ['仿母乳奶嘴', '温热奶嘴', '迷糊时喂', '爸爸喂'],
+      productUsed: 'NUK自然实感奶嘴'
+    }
+  ];
+
+  // 正确使用方法
+  const correctUsage = {
+    steps: [
+      {
+        title: '消毒准备',
+        desc: '首次使用前煮沸消毒5分钟',
+        icon: '🔥',
+        tips: ['使用专用消毒锅', '水完全覆盖奶瓶', '冷却后再取出']
+      },
+      {
+        title: '调配奶粉',
+        desc: '先加水，后加奶粉，轻轻摇匀',
+        icon: '🥛',
+        tips: ['水温40-50度', '按比例添加', '不要剧烈摇晃']
+      },
+      {
+        title: '测试温度',
+        desc: '滴在手腕内侧，温热不烫',
+        icon: '🌡️',
+        tips: ['手腕比手背更敏感', '稍微温热即可', '不能太烫']
+      },
+      {
+        title: '喂奶姿势',
+        desc: '45度斜抱，奶嘴充满奶液',
+        icon: '👶',
+        tips: ['头高脚低', '防止呛奶', '观察宝宝吞咽']
+      },
+      {
+        title: '喂完拍嗝',
+        desc: '竖抱轻拍背部15分钟',
+        icon: '🤚',
+        tips: ['从下往上拍', '力度适中', '等打嗝后再放下']
+      }
+    ],
+    video: {
+      title: '正确喂奶姿势演示',
+      duration: '3:45',
+      views: 12345
+    }
+  };
+
+  const renderProblemsTab = () => (
+    <div className="p-4">
+      {/* 快速搜索 */}
+      <div className="mb-4">
+        <div className="relative">
+          <Search className="w-5 h-5 text-gray-400 absolute left-3 top-3" />
+          <input
+            type="text"
+            placeholder="搜索你遇到的问题..."
+            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-500"
+          />
+        </div>
+      </div>
+
+      {/* 问题分类 */}
+      <div className="space-y-4">
+        {problemCategories.map((category) => (
+          <div key={category.id} className="bg-white rounded-2xl p-4 border border-gray-200">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="text-3xl">{category.icon}</div>
+                <div>
+                  <div className="font-bold text-gray-800">{category.title}</div>
+                  <div className="text-xs text-gray-500">{category.count}个问题</div>
+                </div>
+              </div>
+              <div className={`px-2 py-1 rounded text-xs font-semibold ${
+                category.severity === 'high' 
+                  ? 'bg-red-100 text-red-700'
+                  : category.severity === 'medium'
+                  ? 'bg-orange-100 text-orange-700'
+                  : 'bg-gray-100 text-gray-700'
+              }`}>
+                {category.severity === 'high' ? '高频' : category.severity === 'medium' ? '常见' : '一般'}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              {category.problems.map((problem) => (
+                <div key={problem.id} className="bg-gray-50 rounded-xl p-3 hover:bg-gray-100 transition-all cursor-pointer">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1">
+                      <div className="font-medium text-sm text-gray-800 mb-1">{problem.title}</div>
+                      <div className="flex items-center gap-3 text-xs text-gray-500">
+                        <span className="flex items-center gap-1">
+                          <Users className="w-3 h-3" />
+                          {problem.viewCount}人遇到
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <CheckCircle className="w-3 h-3 text-green-600" />
+                          {problem.solutionCount}个方案
+                        </span>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 bg-green-100 rounded-full h-1.5 overflow-hidden">
+                      <div 
+                        className="bg-green-500 h-full"
+                        style={{ width: `${problem.effectiveness}%` }}
+                      ></div>
+                    </div>
+                    <span className="text-xs text-green-600 font-semibold">{problem.effectiveness}%有效</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderSolutionsTab = () => (
+    <div className="p-4 space-y-4">
+      {solutions.map((solution) => (
+        <div key={solution.id} className="bg-white rounded-2xl p-4 border-2 border-green-200">
+          {/* 问题标题 */}
+          <div className="bg-blue-50 rounded-xl p-3 mb-3">
+            <div className="text-xs text-blue-600 mb-1">❓ 问题</div>
+            <div className="font-semibold text-gray-800">{solution.problem}</div>
+          </div>
+
+          {/* 用户信息 */}
+          <div className="flex items-center gap-2 mb-3">
+            <div className="text-2xl">{solution.user.avatar}</div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-sm">{solution.user.name}</span>
+                {solution.user.verified && (
+                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">
+                    ✓ 已验证
+                  </span>
+                )}
+              </div>
+              <div className="text-xs text-gray-500">{solution.user.age}</div>
+            </div>
+          </div>
+
+          {/* 解决方案 */}
+          <div className="bg-green-50 rounded-xl p-3 mb-3">
+            <div className="text-xs text-green-700 font-semibold mb-2">✓ 我的解决方法</div>
+            <div className="text-sm text-gray-700 whitespace-pre-line">
+              {solution.solution}
+            </div>
+          </div>
+
+          {/* 使用的产品 */}
+          <div className="bg-gray-50 rounded-lg p-2 mb-3 flex items-center justify-between">
+            <div className="text-xs text-gray-600">
+              使用产品：<span className="font-semibold text-blue-600">{solution.productUsed}</span>
+            </div>
+            <button className="text-xs text-blue-600">查看详情 →</button>
+          </div>
+
+          {/* 效果标签 */}
+          <div className="flex flex-wrap gap-2 mb-3">
+            {solution.tags.map((tag, idx) => (
+              <span key={idx} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* 效果反馈 */}
+          <div className="flex items-center justify-between pt-3 border-t">
+            <div className="flex items-center gap-4">
+              <div className="text-xs">
+                <span className="text-gray-600">坚持时长：</span>
+                <span className="font-semibold text-gray-800">{solution.timeUsed}</span>
+              </div>
+              <div className={`text-xs px-2 py-1 rounded ${
+                solution.effectiveness === '非常有效'
+                  ? 'bg-green-100 text-green-700'
+                  : 'bg-blue-100 text-blue-700'
+              }`}>
+                {solution.effectiveness}
+              </div>
+            </div>
+            {solution.video && (
+              <button className="flex items-center gap-1 text-xs text-purple-600 bg-purple-50 px-3 py-1 rounded-lg">
+                <Play className="w-3 h-3" />
+                视频
+              </button>
+            )}
+          </div>
+
+          {/* 互动数据 */}
+          <div className="flex items-center gap-4 pt-3 border-t mt-3 text-xs text-gray-600">
+            <button className="flex items-center gap-1">
+              <ThumbsUp className="w-4 h-4" />
+              <span>{solution.helpful}人觉得有用</span>
+            </button>
+            <span className="flex items-center gap-1 text-green-600">
+              <CheckCircle className="w-4 h-4" />
+              {solution.tried}人已尝试
+            </span>
+          </div>
+        </div>
+      ))}
+
+      {/* 提交方案 */}
+      <button className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-2">
+        <Lightbulb className="w-5 h-5" />
+        我也有解决方案
+      </button>
+    </div>
+  );
+
+  const renderGuidesTab = () => (
+    <div className="p-4 space-y-4">
+      {/* 使用阶段 */}
+      <div>
+        <h3 className="font-bold text-gray-800 mb-3">按使用阶段</h3>
+        <div className="space-y-3">
+          {usageStages.map((stage) => (
+            <div key={stage.id} className="bg-white rounded-2xl p-4 border border-gray-200">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="text-3xl">{stage.icon}</div>
+                <div className="flex-1">
+                  <div className="font-bold text-gray-800">{stage.title}</div>
+                  <div className="text-xs text-gray-500">{stage.duration}</div>
+                </div>
+                <ChevronRight className="w-5 h-5 text-gray-400" />
+              </div>
+
+              <div className="bg-blue-50 rounded-xl p-3 mb-3">
+                <div className="text-xs text-blue-700 font-semibold mb-2">💡 关键提示</div>
+                <div className="space-y-1">
+                  {stage.tips.map((tip, idx) => (
+                    <div key={idx} className="flex items-start gap-2 text-xs text-gray-700">
+                      <CheckCircle className="w-3 h-3 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>{tip}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-orange-50 rounded-xl p-3 mb-3">
+                <div className="text-xs text-orange-700 font-semibold mb-2">⚠️ 常见问题</div>
+                <div className="flex flex-wrap gap-2">
+                  {stage.commonIssues.map((issue, idx) => (
+                    <span key={idx} className="text-xs bg-white text-gray-700 px-2 py-1 rounded border border-orange-200">
+                      {issue}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 text-xs text-gray-500">
+                <Users className="w-3 h-3" />
+                <span>{stage.userCount}位宝妈处于此阶段</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 正确使用方法 */}
+      <div>
+        <h3 className="font-bold text-gray-800 mb-3">正确使用方法</h3>
+        <div className="bg-white rounded-2xl p-4 border border-gray-200">
+          <div className="space-y-3">
+            {correctUsage.steps.map((step, idx) => (
+              <div key={idx} className="relative">
+                {idx < correctUsage.steps.length - 1 && (
+                  <div className="absolute left-6 top-12 w-0.5 h-full bg-gray-200"></div>
+                )}
+                <div className="flex gap-3">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-2xl flex-shrink-0 relative z-10">
+                    {step.icon}
+                  </div>
+                  <div className="flex-1 pb-4">
+                    <div className="font-semibold text-gray-800 mb-1">{step.title}</div>
+                    <div className="text-sm text-gray-600 mb-2">{step.desc}</div>
+                    <div className="space-y-1">
+                      {step.tips.map((tip, tipIdx) => (
+                        <div key={tipIdx} className="flex items-center gap-1 text-xs text-gray-500">
+                          <Zap className="w-3 h-3 text-blue-500" />
+                          <span>{tip}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* 视频教程 */}
+          <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 mt-4">
+            <div className="flex items-center gap-3">
+              <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center">
+                <Play className="w-8 h-8 text-purple-600" />
+              </div>
+              <div className="flex-1">
+                <div className="font-semibold text-gray-800 mb-1">{correctUsage.video.title}</div>
+                <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <Clock className="w-3 h-3" />
+                  <span>{correctUsage.video.duration}</span>
+                  <span>•</span>
+                  <span>{correctUsage.video.views.toLocaleString()}次观看</span>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-gray-400" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="max-w-md mx-auto bg-gray-50 min-h-screen flex flex-col">
+      {/* 顶部导航 */}
+      <div className="bg-gradient-to-r from-green-500 to-teal-500 px-4 py-4 text-white sticky top-0 z-50">
+        <div className="flex items-center justify-between mb-3">
+          <button className="flex items-center gap-2">
+            <ArrowLeft className="w-5 h-5" />
+            <span className="font-bold text-lg">怎么用</span>
+          </button>
+          <button>
+            <HelpCircle className="w-5 h-5" />
+          </button>
+        </div>
+        
+        <div className="text-sm opacity-90">
+          真实经验，避免走弯路
+        </div>
+      </div>
+
+      {/* 产品快速入口 */}
+      <div className="bg-white px-4 py-3 border-b">
+        <div className="text-xs text-gray-600 mb-2">快速查找产品使用方法</div>
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          {quickProducts.map((product) => (
+            <button
+              key={product.id}
+              className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg whitespace-nowrap border border-gray-200 hover:border-blue-500 transition-all relative"
+            >
+              {product.hot && (
+                <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+                  热
+                </div>
+              )}
+              <span className="text-xl">{product.icon}</span>
+              <span className="text-sm text-gray-700">{product.name}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Tab导航 */}
+      <div className="bg-white px-4 flex gap-6 border-b sticky top-20 z-40">
+        <button
+          onClick={() => setActiveTab('problems')}
+          className={`pb-3 font-medium transition-all ${
+            activeTab === 'problems'
+              ? 'text-green-600 border-b-2 border-green-600'
+              : 'text-gray-600'
+          }`}
+        >
+          常见问题
+        </button>
+        <button
+          onClick={() => setActiveTab('solutions')}
+          className={`pb-3 font-medium transition-all ${
+            activeTab === 'solutions'
+              ? 'text-green-600 border-b-2 border-green-600'
+              : 'text-gray-600'
+          }`}
+        >
+          解决方案
+        </button>
+        <button
+          onClick={() => setActiveTab('guides')}
+          className={`pb-3 font-medium transition-all ${
+            activeTab === 'guides'
+              ? 'text-green-600 border-b-2 border-green-600'
+              : 'text-gray-600'
+          }`}
+        >
+          使用指南
+        </button>
+      </div>
+
+      {/* 内容区域 */}
+      <div className="flex-1 overflow-y-auto pb-20">
+        {activeTab === 'problems' && renderProblemsTab()}
+        {activeTab === 'solutions' && renderSolutionsTab()}
+        {activeTab === 'guides' && renderGuidesTab()}
+      </div>
+    </div>
+  );
+};
+
+export default HowToUsePage;
