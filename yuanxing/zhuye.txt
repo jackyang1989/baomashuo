@@ -1,0 +1,464 @@
+import React, { useState } from 'react';
+import { ArrowLeft, MoreVertical, Share2, MessageCircle, UserPlus, UserCheck, MapPin, Calendar, Award, TrendingUp, Heart, MessageSquare, Star, Package, ChevronRight, Eye, ThumbsUp, Crown, Sparkles, CheckCircle } from 'lucide-react';
+
+const UserProfilePage = () => {
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [activeTab, setActiveTab] = useState('posts');
+
+  // 用户信息
+  const userInfo = {
+    name: '小雨妈妈',
+    avatar: '👩',
+    level: 'Lv5',
+    levelName: '资深妈妈',
+    signature: '记录宝宝成长的每一天 | 真实分享不踩坑 ❤️',
+    location: '北京',
+    joinDate: '2024年1月',
+    badges: [
+      { id: 1, name: '金牌评价员', icon: '🏅', color: 'from-yellow-400 to-orange-400' },
+      { id: 2, name: '热心宝妈', icon: '❤️', color: 'from-red-400 to-pink-400' },
+      { id: 3, name: '活跃榜TOP1', icon: '👑', color: 'from-purple-400 to-pink-400' }
+    ],
+    babies: [
+      { id: 1, name: '小雨', age: '3个月', gender: 'girl', emoji: '👶' }
+    ],
+    stats: {
+      posts: 89,
+      reviews: 156,
+      answers: 45,
+      followers: 2345,
+      following: 234,
+      totalLikes: 5670,
+      helpful: 3456
+    },
+    isVerified: true,
+    isExpert: false
+  };
+
+  // 内容数据
+  const contents = {
+    posts: [
+      {
+        id: 1,
+        type: 'milestone',
+        title: '宝宝今天第一次翻身成功了！',
+        content: '从侧卧练习了两周，今天早上突然自己翻过去了...',
+        images: ['📸', '📸', '📸'],
+        likes: 289,
+        comments: 67,
+        time: '2天前',
+        milestone: { name: '第一次翻身', icon: '🤸' }
+      },
+      {
+        id: 2,
+        type: 'share',
+        title: '防胀气奶瓶真实使用3个月心得',
+        content: '用了Comotomo三个月，宝宝胀气明显改善...',
+        images: ['📸', '📸'],
+        likes: 456,
+        comments: 89,
+        time: '5天前'
+      }
+    ],
+    reviews: [
+      {
+        id: 1,
+        product: { name: 'Comotomo奶瓶', image: '🍼', brand: 'Comotomo' },
+        rating: 'recommend',
+        summary: '防胀气效果确实好，宝宝接受度高',
+        useDays: 45,
+        helpful: 234,
+        time: '1周前'
+      },
+      {
+        id: 2,
+        product: { name: 'babycare辅食碗', image: '🥣', brand: 'babycare' },
+        rating: 'not-recommend',
+        summary: '吸盘不牢，已闲置',
+        useDays: 7,
+        helpful: 156,
+        time: '2周前'
+      }
+    ],
+    answers: [
+      {
+        id: 1,
+        question: '宝宝胀气严重怎么办？',
+        answer: '我的建议是先换防胀气奶瓶试试，然后注意喂奶姿势...',
+        likes: 89,
+        adopted: true,
+        time: '3天前'
+      }
+    ]
+  };
+
+  // 关注用户列表（预览）
+  const followers = [
+    { id: 1, name: '晴天妈妈', avatar: '👱‍♀️', mutualFollow: true },
+    { id: 2, name: '暖暖妈咪', avatar: '🙋‍♀️', mutualFollow: false },
+    { id: 3, name: '萌萌妈', avatar: '👩‍🦰', mutualFollow: true }
+  ];
+
+  const handleFollow = () => {
+    setIsFollowing(!isFollowing);
+  };
+
+  const renderHeader = () => (
+    <div className="bg-gradient-to-r from-purple-500 to-pink-500 px-4 pt-4 pb-6 text-white">
+      {/* 导航栏 */}
+      <div className="flex items-center justify-between mb-6">
+        <button>
+          <ArrowLeft className="w-5 h-5" />
+        </button>
+        <div className="flex items-center gap-3">
+          <button>
+            <Share2 className="w-5 h-5" />
+          </button>
+          <button>
+            <MoreVertical className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
+      {/* 用户基础信息 */}
+      <div className="flex items-start gap-4 mb-4">
+        <div className="text-6xl">{userInfo.avatar}</div>
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-1">
+            <h1 className="text-2xl font-bold">{userInfo.name}</h1>
+            {userInfo.isVerified && (
+              <CheckCircle className="w-5 h-5 text-blue-300" />
+            )}
+            {userInfo.isExpert && (
+              <div className="bg-yellow-400 text-yellow-900 text-xs px-2 py-0.5 rounded flex items-center gap-1">
+                <Crown className="w-3 h-3" />
+                <span>专家</span>
+              </div>
+            )}
+          </div>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="bg-white/30 text-xs px-2 py-0.5 rounded-full">
+              {userInfo.level}
+            </span>
+            <span className="text-sm opacity-90">{userInfo.levelName}</span>
+          </div>
+          <div className="text-sm opacity-90 leading-relaxed">
+            {userInfo.signature}
+          </div>
+        </div>
+      </div>
+
+      {/* 徽章展示 */}
+      <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
+        {userInfo.badges.map((badge) => (
+          <div
+            key={badge.id}
+            className={`bg-gradient-to-r ${badge.color} rounded-lg px-3 py-1.5 flex items-center gap-1 whitespace-nowrap`}
+          >
+            <span className="text-base">{badge.icon}</span>
+            <span className="text-xs font-semibold text-white">{badge.name}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* 宝宝信息 */}
+      <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3 mb-4">
+        <div className="flex items-center gap-2">
+          <span className="text-xl">{userInfo.babies[0].emoji}</span>
+          <div>
+            <div className="font-semibold">{userInfo.babies[0].name}</div>
+            <div className="text-xs opacity-90">{userInfo.babies[0].age}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* 位置和加入时间 */}
+      <div className="flex items-center gap-4 text-sm opacity-90 mb-4">
+        <div className="flex items-center gap-1">
+          <MapPin className="w-4 h-4" />
+          <span>{userInfo.location}</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <Calendar className="w-4 h-4" />
+          <span>{userInfo.joinDate}加入</span>
+        </div>
+      </div>
+
+      {/* 操作按钮 */}
+      <div className="flex gap-2">
+        <button
+          onClick={handleFollow}
+          className={`flex-1 py-2.5 rounded-xl font-semibold transition-all ${
+            isFollowing
+              ? 'bg-white/30 text-white'
+              : 'bg-white text-purple-600'
+          }`}
+        >
+          {isFollowing ? (
+            <span className="flex items-center justify-center gap-1">
+              <UserCheck className="w-4 h-4" />
+              已关注
+            </span>
+          ) : (
+            <span className="flex items-center justify-center gap-1">
+              <UserPlus className="w-4 h-4" />
+              关注
+            </span>
+          )}
+        </button>
+        <button className="px-4 py-2.5 bg-white/30 rounded-xl">
+          <MessageCircle className="w-5 h-5" />
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderStats = () => (
+    <div className="bg-white px-4 py-4 border-b">
+      <div className="grid grid-cols-5 gap-2">
+        <button className="flex flex-col items-center">
+          <div className="text-xl font-bold text-gray-800">{userInfo.stats.posts}</div>
+          <div className="text-xs text-gray-600">帖子</div>
+        </button>
+        <button className="flex flex-col items-center">
+          <div className="text-xl font-bold text-gray-800">{userInfo.stats.reviews}</div>
+          <div className="text-xs text-gray-600">评价</div>
+        </button>
+        <button className="flex flex-col items-center">
+          <div className="text-xl font-bold text-gray-800">{userInfo.stats.followers}</div>
+          <div className="text-xs text-gray-600">粉丝</div>
+        </button>
+        <button className="flex flex-col items-center">
+          <div className="text-xl font-bold text-gray-800">{userInfo.stats.following}</div>
+          <div className="text-xs text-gray-600">关注</div>
+        </button>
+        <button className="flex flex-col items-center">
+          <div className="text-xl font-bold text-orange-600">{userInfo.stats.totalLikes}</div>
+          <div className="text-xs text-gray-600">获赞</div>
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderHighlights = () => (
+    <div className="bg-white px-4 py-4 border-b">
+      <h3 className="font-bold text-gray-800 mb-3">Ta的亮点</h3>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-3 border border-blue-200">
+          <div className="flex items-center gap-2 mb-1">
+            <ThumbsUp className="w-4 h-4 text-blue-600" />
+            <span className="text-xs text-gray-600">有用度</span>
+          </div>
+          <div className="text-2xl font-bold text-blue-600">{userInfo.stats.helpful}</div>
+          <div className="text-xs text-gray-500 mt-1">评价被点有用</div>
+        </div>
+        <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-3 border border-purple-200">
+          <div className="flex items-center gap-2 mb-1">
+            <Award className="w-4 h-4 text-purple-600" />
+            <span className="text-xs text-gray-600">影响力</span>
+          </div>
+          <div className="text-2xl font-bold text-purple-600">TOP 1%</div>
+          <div className="text-xs text-gray-500 mt-1">活跃榜排名</div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderFollowers = () => (
+    <div className="bg-white px-4 py-4 border-b">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="font-bold text-gray-800">共同关注</h3>
+        <button className="text-xs text-blue-600">
+          查看全部 →
+        </button>
+      </div>
+      <div className="flex gap-3">
+        {followers.slice(0, 5).map((follower) => (
+          <button key={follower.id} className="flex flex-col items-center">
+            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-2xl mb-1 relative">
+              {follower.avatar}
+              {follower.mutualFollow && (
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                  <UserCheck className="w-2.5 h-2.5 text-white" />
+                </div>
+              )}
+            </div>
+            <div className="text-xs text-gray-700 text-center truncate w-12">
+              {follower.name.split('妈')[0]}
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderContent = () => {
+    if (activeTab === 'posts') {
+      return (
+        <div className="p-4 space-y-3">
+          {contents.posts.map((post) => (
+            <div key={post.id} className="bg-white rounded-2xl p-4 border border-gray-200">
+              {post.milestone && (
+                <div className="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded-full inline-flex items-center gap-1 mb-2">
+                  <Sparkles className="w-3 h-3" />
+                  <span>{post.milestone.name}</span>
+                </div>
+              )}
+              <div className="font-semibold text-gray-800 mb-2">{post.title}</div>
+              <div className="text-sm text-gray-600 mb-3 line-clamp-2">{post.content}</div>
+              {post.images && (
+                <div className="grid grid-cols-3 gap-2 mb-3">
+                  {post.images.map((img, idx) => (
+                    <div key={idx} className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center text-3xl">
+                      {img}
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="flex items-center justify-between text-xs text-gray-500">
+                <div className="flex items-center gap-3">
+                  <span className="flex items-center gap-1">
+                    <Heart className="w-3 h-3" />
+                    {post.likes}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <MessageSquare className="w-3 h-3" />
+                    {post.comments}
+                  </span>
+                </div>
+                <span>{post.time}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    if (activeTab === 'reviews') {
+      return (
+        <div className="p-4 space-y-3">
+          {contents.reviews.map((review) => (
+            <div key={review.id} className="bg-white rounded-2xl p-4 border border-gray-200">
+              <div className="flex gap-3 mb-3">
+                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-2xl">
+                  {review.product.image}
+                </div>
+                <div className="flex-1">
+                  <div className="text-xs text-gray-500 mb-1">{review.product.brand}</div>
+                  <div className="font-medium text-sm text-gray-800">{review.product.name}</div>
+                </div>
+                <div className={`text-xs px-2 py-1 rounded ${
+                  review.rating === 'recommend'
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-red-100 text-red-700'
+                }`}>
+                  {review.rating === 'recommend' ? '推荐' : '不推荐'}
+                </div>
+              </div>
+              <div className="bg-gray-50 rounded-lg p-2 mb-2 text-sm text-gray-700">
+                💬 {review.summary}
+              </div>
+              <div className="flex items-center justify-between text-xs text-gray-500">
+                <span>使用{review.useDays}天</span>
+                <span>{review.helpful}人觉得有用</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    if (activeTab === 'answers') {
+      return (
+        <div className="p-4 space-y-3">
+          {contents.answers.map((answer) => (
+            <div key={answer.id} className="bg-white rounded-2xl p-4 border border-gray-200">
+              <div className="flex items-start gap-2 mb-2">
+                <div className="text-blue-600 text-sm">Q:</div>
+                <div className="flex-1 text-sm text-gray-700 font-medium">
+                  {answer.question}
+                </div>
+                {answer.adopted && (
+                  <div className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded flex items-center gap-1">
+                    <CheckCircle className="w-3 h-3" />
+                    <span>已采纳</span>
+                  </div>
+                )}
+              </div>
+              <div className="flex items-start gap-2 mb-3">
+                <div className="text-green-600 text-sm">A:</div>
+                <div className="flex-1 text-sm text-gray-700 line-clamp-3">
+                  {answer.answer}
+                </div>
+              </div>
+              <div className="flex items-center justify-between text-xs text-gray-500">
+                <span className="flex items-center gap-1">
+                  <ThumbsUp className="w-3 h-3" />
+                  {answer.likes}人觉得有用
+                </span>
+                <span>{answer.time}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+  };
+
+  return (
+    <div className="max-w-md mx-auto bg-gray-50 min-h-screen flex flex-col">
+      {/* 用户信息头部 */}
+      {renderHeader()}
+
+      {/* 数据统计 */}
+      {renderStats()}
+
+      {/* 亮点展示 */}
+      {renderHighlights()}
+
+      {/* 共同关注 */}
+      {renderFollowers()}
+
+      {/* Tab导航 */}
+      <div className="bg-white px-4 flex gap-6 border-b sticky top-0 z-40">
+        <button
+          onClick={() => setActiveTab('posts')}
+          className={`pb-3 font-medium transition-all ${
+            activeTab === 'posts'
+              ? 'text-purple-600 border-b-2 border-purple-600'
+              : 'text-gray-600'
+          }`}
+        >
+          帖子({userInfo.stats.posts})
+        </button>
+        <button
+          onClick={() => setActiveTab('reviews')}
+          className={`pb-3 font-medium transition-all ${
+            activeTab === 'reviews'
+              ? 'text-purple-600 border-b-2 border-purple-600'
+              : 'text-gray-600'
+          }`}
+        >
+          评价({userInfo.stats.reviews})
+        </button>
+        <button
+          onClick={() => setActiveTab('answers')}
+          className={`pb-3 font-medium transition-all ${
+            activeTab === 'answers'
+              ? 'text-purple-600 border-b-2 border-purple-600'
+              : 'text-gray-600'
+          }`}
+        >
+          回答({userInfo.stats.answers})
+        </button>
+      </div>
+
+      {/* 内容列表 */}
+      <div className="flex-1 overflow-y-auto pb-4">
+        {renderContent()}
+      </div>
+    </div>
+  );
+};
+
+export default UserProfilePage;
