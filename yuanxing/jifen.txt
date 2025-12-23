@@ -1,0 +1,499 @@
+import React, { useState } from 'react';
+import { ArrowLeft, Gift, TrendingUp, Clock, Users, Star, ChevronRight, Sparkles, Award, Zap, Package, ShoppingCart, AlertCircle, CheckCircle, Trophy, Crown, Target } from 'lucide-react';
+
+const PointsStorePage = () => {
+  const [activeTab, setActiveTab] = useState('all');
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  // 用户积分信息
+  const userPoints = {
+    current: 2850,
+    total: 5670,
+    thisMonth: 420,
+    rank: 156,
+    level: 'Lv5'
+  };
+
+  // 商品分类
+  const categories = [
+    { id: 'all', name: '全部', icon: '🎁' },
+    { id: 'samples', name: '试用装', icon: '🧴' },
+    { id: 'goods', name: '实物', icon: '📦' },
+    { id: 'coupons', name: '优惠券', icon: '🎟️' },
+    { id: 'vip', name: 'VIP', icon: '👑' }
+  ];
+
+  // 积分商品
+  const products = [
+    {
+      id: 1,
+      name: '奶粉试用装',
+      brand: '爱他美',
+      image: '🍼',
+      points: 500,
+      originalPrice: 39,
+      stock: 23,
+      limit: 1,
+      tag: '热兑',
+      redeemCount: 1234,
+      category: 'samples'
+    },
+    {
+      id: 2,
+      name: '纸尿裤试用装',
+      brand: '好奇',
+      image: '🧷',
+      points: 300,
+      originalPrice: 25,
+      stock: 45,
+      limit: 1,
+      tag: '新品',
+      redeemCount: 892,
+      category: 'samples'
+    },
+    {
+      id: 3,
+      name: '宝宝袜子3双装',
+      brand: '童泰',
+      image: '🧦',
+      points: 800,
+      originalPrice: 45,
+      stock: 12,
+      limit: 2,
+      tag: null,
+      redeemCount: 567,
+      category: 'goods'
+    },
+    {
+      id: 4,
+      name: '平台10元优惠券',
+      brand: '宝妈说',
+      image: '🎟️',
+      points: 500,
+      originalPrice: 10,
+      stock: 999,
+      limit: 3,
+      tag: '无门槛',
+      redeemCount: 3456,
+      category: 'coupons'
+    },
+    {
+      id: 5,
+      name: 'VIP会员7天体验',
+      brand: '宝妈说',
+      image: '👑',
+      points: 1000,
+      originalPrice: 19,
+      stock: 100,
+      limit: 1,
+      tag: '限时',
+      redeemCount: 234,
+      category: 'vip'
+    },
+    {
+      id: 6,
+      name: '10元微信红包',
+      brand: '现金',
+      image: '💰',
+      points: 10000,
+      originalPrice: 10,
+      stock: 50,
+      limit: 2,
+      tag: '实名',
+      redeemCount: 89,
+      category: 'goods',
+      needVerify: true
+    }
+  ];
+
+  // 积分任务
+  const tasks = [
+    {
+      id: 1,
+      name: '每日签到',
+      points: 10,
+      icon: '📅',
+      progress: 1,
+      total: 1,
+      status: 'completed'
+    },
+    {
+      id: 2,
+      name: '发布评价',
+      points: 50,
+      icon: '✍️',
+      progress: 2,
+      total: 5,
+      status: 'ongoing'
+    },
+    {
+      id: 3,
+      name: '发布帖子',
+      points: 20,
+      icon: '📝',
+      progress: 1,
+      total: 3,
+      status: 'ongoing'
+    },
+    {
+      id: 4,
+      name: '邀请好友',
+      points: 100,
+      icon: '👥',
+      progress: 0,
+      total: 1,
+      status: 'available'
+    }
+  ];
+
+  // 兑换记录
+  const redemptions = [
+    {
+      id: 1,
+      product: '奶粉试用装',
+      points: 500,
+      status: 'shipped',
+      time: '2天前',
+      trackingNo: 'SF1234567890'
+    },
+    {
+      id: 2,
+      product: '平台10元优惠券',
+      points: 500,
+      status: 'completed',
+      time: '5天前'
+    }
+  ];
+
+  const handleRedeem = (product) => {
+    setSelectedProduct(product);
+  };
+
+  const confirmRedeem = () => {
+    // 兑换逻辑
+    setSelectedProduct(null);
+  };
+
+  const filteredProducts = activeTab === 'all' 
+    ? products 
+    : products.filter(p => p.category === activeTab);
+
+  const renderHeader = () => (
+    <div className="bg-gradient-to-r from-orange-500 to-red-500 px-4 pt-4 pb-6 text-white">
+      <div className="flex items-center justify-between mb-4">
+        <button className="flex items-center gap-2">
+          <ArrowLeft className="w-5 h-5" />
+          <span className="font-bold text-lg">积分商城</span>
+        </button>
+        <button className="text-sm">
+          兑换记录 →
+        </button>
+      </div>
+
+      {/* 积分卡片 */}
+      <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <div className="text-sm opacity-90 mb-1">我的积分</div>
+            <div className="text-4xl font-bold">{userPoints.current.toLocaleString()}</div>
+          </div>
+          <div className="text-right">
+            <div className="flex items-center gap-1 mb-1">
+              <Award className="w-4 h-4" />
+              <span className="text-sm">{userPoints.level}</span>
+            </div>
+            <div className="text-xs opacity-90">排名 #{userPoints.rank}</div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-3 pt-3 border-t border-white/30">
+          <div className="text-center">
+            <div className="text-xl font-bold">{userPoints.total.toLocaleString()}</div>
+            <div className="text-xs opacity-80">累计获得</div>
+          </div>
+          <div className="text-center">
+            <div className="text-xl font-bold text-yellow-300">+{userPoints.thisMonth}</div>
+            <div className="text-xs opacity-80">本月新增</div>
+          </div>
+          <div className="text-center">
+            <button className="text-xl font-bold text-yellow-300">
+              <TrendingUp className="w-5 h-5 inline" />
+            </button>
+            <div className="text-xs opacity-80">获取攻略</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderTasks = () => (
+    <div className="bg-white mx-4 mt-4 rounded-2xl p-4 border border-orange-200">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <Target className="w-5 h-5 text-orange-600" />
+          <h3 className="font-bold text-gray-800">每日任务</h3>
+        </div>
+        <span className="text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded-full">
+          今日可得 180积分
+        </span>
+      </div>
+
+      <div className="space-y-2">
+        {tasks.map((task) => (
+          <div key={task.id} className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl p-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="text-2xl">{task.icon}</div>
+                <div>
+                  <div className="font-medium text-sm text-gray-800">{task.name}</div>
+                  <div className="text-xs text-gray-500">
+                    奖励 <span className="text-orange-600 font-semibold">+{task.points}积分</span>
+                  </div>
+                </div>
+              </div>
+              {task.status === 'completed' ? (
+                <div className="flex items-center gap-1 text-green-600 text-xs bg-green-50 px-3 py-1 rounded-full">
+                  <CheckCircle className="w-3 h-3" />
+                  <span>已完成</span>
+                </div>
+              ) : task.status === 'ongoing' ? (
+                <div className="text-right">
+                  <div className="text-xs text-gray-500 mb-1">{task.progress}/{task.total}</div>
+                  <button className="text-xs text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                    去完成
+                  </button>
+                </div>
+              ) : (
+                <button className="text-xs text-orange-600 bg-orange-50 px-3 py-1 rounded-full font-medium">
+                  去完成
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderProducts = () => (
+    <div className="p-4">
+      {/* 分类Tab */}
+      <div className="flex gap-2 overflow-x-auto pb-3 mb-4">
+        {categories.map((cat) => (
+          <button
+            key={cat.id}
+            onClick={() => setActiveTab(cat.id)}
+            className={`flex items-center gap-1 px-4 py-2 rounded-full whitespace-nowrap transition-all ${
+              activeTab === cat.id
+                ? 'bg-orange-500 text-white'
+                : 'bg-gray-100 text-gray-700'
+            }`}
+          >
+            <span>{cat.icon}</span>
+            <span className="text-sm font-medium">{cat.name}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* 商品网格 */}
+      <div className="grid grid-cols-2 gap-3">
+        {filteredProducts.map((product) => (
+          <div key={product.id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+            {/* 标签 */}
+            {product.tag && (
+              <div className={`absolute top-0 right-0 px-2 py-1 text-xs font-semibold text-white rounded-bl-lg ${
+                product.tag === '热兑' ? 'bg-red-500' :
+                product.tag === '新品' ? 'bg-blue-500' :
+                product.tag === '限时' ? 'bg-purple-500' :
+                product.tag === '无门槛' ? 'bg-green-500' :
+                'bg-orange-500'
+              }`}>
+                {product.tag}
+              </div>
+            )}
+
+            {/* 商品图片 */}
+            <div className="relative">
+              <div className="aspect-square bg-gray-100 flex items-center justify-center text-6xl">
+                {product.image}
+              </div>
+            </div>
+
+            {/* 商品信息 */}
+            <div className="p-3">
+              <div className="text-xs text-gray-500 mb-1">{product.brand}</div>
+              <div className="font-semibold text-sm text-gray-800 mb-2 line-clamp-2 h-10">
+                {product.name}
+              </div>
+
+              {/* 价格 */}
+              <div className="flex items-baseline gap-1 mb-2">
+                <span className="text-xl font-bold text-orange-600">{product.points}</span>
+                <span className="text-xs text-gray-500">积分</span>
+                <span className="text-xs text-gray-400 line-through ml-auto">¥{product.originalPrice}</span>
+              </div>
+
+              {/* 兑换信息 */}
+              <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+                <span className="flex items-center gap-1">
+                  <Users className="w-3 h-3" />
+                  {product.redeemCount}人兑换
+                </span>
+                <span className={product.stock < 20 ? 'text-red-500' : ''}>
+                  剩{product.stock}件
+                </span>
+              </div>
+
+              {/* 兑换按钮 */}
+              <button
+                onClick={() => handleRedeem(product)}
+                disabled={product.points > userPoints.current || product.stock === 0}
+                className={`w-full py-2 rounded-lg text-sm font-semibold transition-all ${
+                  product.points > userPoints.current
+                    ? 'bg-gray-200 text-gray-400'
+                    : product.stock === 0
+                    ? 'bg-gray-200 text-gray-400'
+                    : 'bg-gradient-to-r from-orange-500 to-red-500 text-white'
+                }`}
+              >
+                {product.stock === 0 ? '已兑完' :
+                 product.points > userPoints.current ? '积分不足' : '立即兑换'}
+              </button>
+
+              {product.limit && (
+                <div className="text-xs text-orange-600 text-center mt-2">
+                  每人限兑{product.limit}件
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 加载更多 */}
+      <div className="text-center py-6">
+        <button className="text-sm text-gray-600">
+          查看更多商品 →
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderRedeemModal = () => {
+    if (!selectedProduct) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-2xl max-w-sm w-full">
+          <div className="p-6">
+            <div className="text-center mb-4">
+              <div className="text-6xl mb-3">{selectedProduct.image}</div>
+              <div className="font-bold text-lg text-gray-800 mb-1">
+                {selectedProduct.name}
+              </div>
+              <div className="text-sm text-gray-600">{selectedProduct.brand}</div>
+            </div>
+
+            <div className="bg-orange-50 rounded-xl p-4 mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-700">兑换所需</span>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-2xl font-bold text-orange-600">{selectedProduct.points}</span>
+                  <span className="text-sm text-gray-600">积分</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-700">当前积分</span>
+                <span className="text-sm font-semibold text-gray-800">{userPoints.current.toLocaleString()}</span>
+              </div>
+              <div className="flex items-center justify-between pt-2 mt-2 border-t border-orange-200">
+                <span className="text-sm text-gray-700">兑换后剩余</span>
+                <span className="text-lg font-bold text-blue-600">
+                  {(userPoints.current - selectedProduct.points).toLocaleString()}
+                </span>
+              </div>
+            </div>
+
+            {selectedProduct.needVerify && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 mb-4">
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 text-yellow-600 flex-shrink-0 mt-0.5" />
+                  <div className="text-xs text-yellow-800">
+                    <div className="font-semibold mb-1">需要实名认证</div>
+                    <div>兑换现金红包需要完成实名认证才能提现</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="text-xs text-gray-500 mb-4">
+              <div className="flex items-center gap-1 mb-1">
+                <Package className="w-3 h-3" />
+                <span>预计3-7天发货</span>
+              </div>
+              {selectedProduct.limit && (
+                <div className="flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  <span>每人限兑{selectedProduct.limit}件</span>
+                </div>
+              )}
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => setSelectedProduct(null)}
+                className="flex-1 py-3 border border-gray-300 rounded-xl text-gray-700 font-semibold"
+              >
+                取消
+              </button>
+              <button
+                onClick={confirmRedeem}
+                className="flex-1 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-semibold"
+              >
+                确认兑换
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="max-w-md mx-auto bg-gray-50 min-h-screen flex flex-col">
+      {/* 顶部积分信息 */}
+      {renderHeader()}
+
+      {/* 每日任务 */}
+      {renderTasks()}
+
+      {/* 积分规则说明 */}
+      <div className="mx-4 mt-4 bg-blue-50 border border-blue-200 rounded-xl p-3">
+        <div className="flex items-start gap-2">
+          <Sparkles className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+          <div className="text-xs text-blue-800">
+            <div className="font-semibold mb-1">积分获取方式</div>
+            <div>• 每日签到 +10分</div>
+            <div>• 发布评价 +50分</div>
+            <div>• 发布帖子 +20分</div>
+            <div>• 邀请好友 +100分</div>
+            <div>• 优质内容额外奖励</div>
+          </div>
+        </div>
+      </div>
+
+      {/* 商品列表 */}
+      <div className="flex-1 overflow-y-auto pb-4">
+        {renderProducts()}
+      </div>
+
+      {/* 兑换弹窗 */}
+      {renderRedeemModal()}
+
+      {/* 底部导航占位 */}
+      <div className="h-16"></div>
+    </div>
+  );
+};
+
+export default PointsStorePage;
