@@ -1,0 +1,359 @@
+import React, { useState } from 'react';
+import { ArrowLeft, Settings, Heart, MessageSquare, UserPlus, AtSign, Bell, Gift, TrendingUp, Package, DollarSign, AlertCircle, CheckCircle, Star, ChevronRight, X } from 'lucide-react';
+
+const NotificationsPage = () => {
+  const [activeTab, setActiveTab] = useState('all');
+  const [unreadCount, setUnreadCount] = useState(5);
+
+  // 消息分类统计
+  const categories = [
+    { id: 'all', name: '全部', count: 12, icon: Bell },
+    { id: 'interact', name: '互动', count: 5, icon: Heart },
+    { id: 'system', name: '系统', count: 3, icon: AlertCircle },
+    { id: 'earnings', name: '收益', count: 2, icon: DollarSign },
+    { id: 'activity', name: '活动', count: 2, icon: Gift }
+  ];
+
+  // 消息列表
+  const notifications = [
+    {
+      id: 1,
+      type: 'like',
+      user: { name: '晴天妈妈', avatar: '👱‍♀️' },
+      content: '赞了你的帖子',
+      target: '宝宝今天第一次翻身成功了！',
+      time: '5分钟前',
+      read: false,
+      link: '/post/123'
+    },
+    {
+      id: 2,
+      type: 'comment',
+      user: { name: '暖暖妈咪', avatar: '🙋‍♀️' },
+      content: '评论了你的帖子',
+      comment: '恭喜恭喜！我家宝宝也是3个月翻身的',
+      target: '宝宝今天第一次翻身成功了！',
+      time: '10分钟前',
+      read: false,
+      link: '/post/123'
+    },
+    {
+      id: 3,
+      type: 'reply',
+      user: { name: '萌萌妈', avatar: '👩‍🦰' },
+      content: '回复了你的评论',
+      comment: '谢谢分享！我也试试这个方法',
+      target: '防胀气奶瓶使用心得',
+      time: '1小时前',
+      read: false,
+      link: '/post/456'
+    },
+    {
+      id: 4,
+      type: 'follow',
+      user: { name: '甜甜妈', avatar: '👱' },
+      content: '关注了你',
+      time: '2小时前',
+      read: false,
+      link: '/user/789'
+    },
+    {
+      id: 5,
+      type: 'at',
+      user: { name: '小雨妈妈', avatar: '👩' },
+      content: '在帖子中@了你',
+      target: '求推荐防胀气奶瓶',
+      time: '3小时前',
+      read: false,
+      link: '/post/789'
+    },
+    {
+      id: 6,
+      type: 'system',
+      icon: '🎉',
+      content: '恭喜你获得「金牌评价员」徽章',
+      description: '继续加油，分享更多真实体验吧！',
+      time: '昨天 18:30',
+      read: true
+    },
+    {
+      id: 7,
+      type: 'earnings',
+      icon: '💰',
+      content: '佣金到账通知',
+      description: '订单TB202412230001已结算，佣金¥12.80已到账',
+      time: '昨天 14:20',
+      read: true,
+      link: '/earnings'
+    },
+    {
+      id: 8,
+      type: 'activity',
+      icon: '🎁',
+      content: '【每日好物】今日精选母婴好物上新',
+      description: '3款高性价比产品，最高优惠30元',
+      time: '今天 10:00',
+      read: true,
+      link: '/activity/daily'
+    },
+    {
+      id: 9,
+      type: 'reward',
+      icon: '✨',
+      content: '积分奖励到账',
+      description: '发布评价获得50积分，当前积分2850',
+      time: '2天前',
+      read: true,
+      link: '/points'
+    },
+    {
+      id: 10,
+      type: 'order',
+      icon: '📦',
+      content: '你推广的商品有新订单',
+      description: 'Comotomo奶瓶，预估佣金¥12.80',
+      time: '2天前',
+      read: true,
+      link: '/earnings/orders'
+    },
+    {
+      id: 11,
+      type: 'price_drop',
+      icon: '🔔',
+      content: '你收藏的商品降价了',
+      description: 'Comotomo奶瓶 降至¥108，省20元',
+      time: '3天前',
+      read: true,
+      link: '/product/123'
+    },
+    {
+      id: 12,
+      type: 'milestone',
+      icon: '🎊',
+      content: '同圈宝宝达成新里程碑',
+      description: '2024年9月圈已有456位宝宝完成第一次翻身',
+      time: '3天前',
+      read: true,
+      link: '/circle/202409'
+    }
+  ];
+
+  const getTypeInfo = (type) => {
+    const typeMap = {
+      like: { icon: Heart, color: 'text-red-500', bg: 'bg-red-50' },
+      comment: { icon: MessageSquare, color: 'text-blue-500', bg: 'bg-blue-50' },
+      reply: { icon: MessageSquare, color: 'text-blue-500', bg: 'bg-blue-50' },
+      follow: { icon: UserPlus, color: 'text-purple-500', bg: 'bg-purple-50' },
+      at: { icon: AtSign, color: 'text-green-500', bg: 'bg-green-50' },
+      system: { icon: Bell, color: 'text-orange-500', bg: 'bg-orange-50' },
+      earnings: { icon: DollarSign, color: 'text-green-500', bg: 'bg-green-50' },
+      activity: { icon: Gift, color: 'text-pink-500', bg: 'bg-pink-50' },
+      reward: { icon: Star, color: 'text-yellow-500', bg: 'bg-yellow-50' },
+      order: { icon: Package, color: 'text-blue-500', bg: 'bg-blue-50' },
+      price_drop: { icon: TrendingUp, color: 'text-red-500', bg: 'bg-red-50' },
+      milestone: { icon: CheckCircle, color: 'text-purple-500', bg: 'bg-purple-50' }
+    };
+    return typeMap[type] || typeMap.system;
+  };
+
+  const markAsRead = (id) => {
+    // 标记已读逻辑
+    setUnreadCount(prev => Math.max(0, prev - 1));
+  };
+
+  const markAllAsRead = () => {
+    // 全部标记已读
+    setUnreadCount(0);
+  };
+
+  const deleteNotification = (id) => {
+    // 删除通知
+  };
+
+  const filteredNotifications = activeTab === 'all' 
+    ? notifications 
+    : notifications.filter(n => {
+        if (activeTab === 'interact') return ['like', 'comment', 'reply', 'follow', 'at'].includes(n.type);
+        if (activeTab === 'system') return ['system', 'milestone'].includes(n.type);
+        if (activeTab === 'earnings') return ['earnings', 'reward', 'order'].includes(n.type);
+        if (activeTab === 'activity') return ['activity', 'price_drop'].includes(n.type);
+        return true;
+      });
+
+  const renderNotificationCard = (notification) => {
+    const typeInfo = getTypeInfo(notification.type);
+    const IconComponent = typeInfo.icon;
+
+    return (
+      <div
+        key={notification.id}
+        className={`bg-white border-b last:border-b-0 px-4 py-3 hover:bg-gray-50 transition-all ${
+          !notification.read ? 'bg-blue-50/30' : ''
+        }`}
+        onClick={() => markAsRead(notification.id)}
+      >
+        <div className="flex gap-3">
+          {/* 头像或图标 */}
+          <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${typeInfo.bg}`}>
+            {notification.user ? (
+              <div className="text-2xl">{notification.user.avatar}</div>
+            ) : (
+              <div className="text-2xl">{notification.icon}</div>
+            )}
+          </div>
+
+          {/* 内容 */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between mb-1">
+              <div className="flex-1">
+                {notification.user && (
+                  <span className="font-semibold text-sm text-gray-800">
+                    {notification.user.name}
+                  </span>
+                )}
+                <span className={`text-sm ${notification.user ? 'text-gray-600 ml-1' : 'font-semibold text-gray-800'}`}>
+                  {notification.content}
+                </span>
+              </div>
+              {!notification.read && (
+                <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 ml-2 mt-1"></div>
+              )}
+            </div>
+
+            {/* 评论内容 */}
+            {notification.comment && (
+              <div className="bg-gray-50 rounded-lg p-2 mb-1 text-sm text-gray-700">
+                💬 {notification.comment}
+              </div>
+            )}
+
+            {/* 描述文本 */}
+            {notification.description && (
+              <div className="text-sm text-gray-600 mb-1">
+                {notification.description}
+              </div>
+            )}
+
+            {/* 目标内容 */}
+            {notification.target && (
+              <div className="text-sm text-blue-600 mb-1 truncate">
+                「{notification.target}」
+              </div>
+            )}
+
+            {/* 时间和操作 */}
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-gray-400">{notification.time}</span>
+              <div className="flex items-center gap-2">
+                {notification.link && (
+                  <button className="text-xs text-blue-600">
+                    查看详情 →
+                  </button>
+                )}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteNotification(notification.id);
+                  }}
+                  className="text-gray-400 hover:text-red-500"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="max-w-md mx-auto bg-gray-50 min-h-screen flex flex-col">
+      {/* 顶部导航 */}
+      <div className="bg-white px-4 py-3 flex items-center justify-between shadow-sm sticky top-0 z-50">
+        <button className="flex items-center gap-2">
+          <ArrowLeft className="w-5 h-5" />
+          <span className="font-semibold">通知</span>
+          {unreadCount > 0 && (
+            <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+              {unreadCount}
+            </span>
+          )}
+        </button>
+        <div className="flex items-center gap-3">
+          {unreadCount > 0 && (
+            <button
+              onClick={markAllAsRead}
+              className="text-sm text-blue-600"
+            >
+              全部已读
+            </button>
+          )}
+          <button>
+            <Settings className="w-5 h-5 text-gray-600" />
+          </button>
+        </div>
+      </div>
+
+      {/* 分类Tab */}
+      <div className="bg-white px-4 border-b sticky top-14 z-40">
+        <div className="flex gap-6 overflow-x-auto">
+          {categories.map((category) => {
+            const CategoryIcon = category.icon;
+            return (
+              <button
+                key={category.id}
+                onClick={() => setActiveTab(category.id)}
+                className={`pb-3 flex items-center gap-2 whitespace-nowrap transition-all ${
+                  activeTab === category.id
+                    ? 'text-blue-600 border-b-2 border-blue-600'
+                    : 'text-gray-600'
+                }`}
+              >
+                <CategoryIcon className="w-4 h-4" />
+                <span className="font-medium">{category.name}</span>
+                {category.count > 0 && (
+                  <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                    activeTab === category.id
+                      ? 'bg-blue-100 text-blue-600'
+                      : 'bg-gray-100 text-gray-600'
+                  }`}>
+                    {category.count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 消息列表 */}
+      <div className="flex-1 overflow-y-auto">
+        {filteredNotifications.length > 0 ? (
+          <div className="bg-white">
+            {filteredNotifications.map(renderNotificationCard)}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="text-6xl mb-4">📭</div>
+            <div className="text-gray-600 mb-2">暂无通知</div>
+            <div className="text-sm text-gray-500">消息都看完啦</div>
+          </div>
+        )}
+      </div>
+
+      {/* 通知设置入口 */}
+      <div className="bg-white border-t px-4 py-3">
+        <button className="w-full flex items-center justify-between py-2 text-gray-700">
+          <div className="flex items-center gap-2">
+            <Settings className="w-5 h-5" />
+            <span className="text-sm">通知设置</span>
+          </div>
+          <ChevronRight className="w-5 h-5 text-gray-400" />
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default NotificationsPage;
