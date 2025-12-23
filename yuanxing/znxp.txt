@@ -1,0 +1,522 @@
+import React, { useState } from 'react';
+import { ArrowLeft, Sparkles, Filter, Heart, Star, TrendingUp, Users, CheckCircle, AlertTriangle, ChevronRight, ShoppingCart, Share2, ThumbsUp, Clock, Package, Zap, Award, Eye, MessageSquare, BookmarkPlus, Info, RefreshCw } from 'lucide-react';
+
+const SmartRecommendationPage = () => {
+  const [showFilters, setShowFilters] = useState(false);
+  const [sortBy, setSortBy] = useState('smart');
+  const [selectedForCompare, setSelectedForCompare] = useState([]);
+
+  // 筛选条件
+  const filters = {
+    babyAge: '3-6个月',
+    problem: '防胀气',
+    budget: '50-150元',
+    resultCount: 8
+  };
+
+  // 智能推荐结论
+  const smartConclusion = {
+    bestMatch: {
+      id: 1,
+      name: 'Comotomo可么多么硅胶奶瓶',
+      brand: 'Comotomo',
+      matchScore: 95,
+      reason: '最适合你的宝宝'
+    },
+    keyPoints: [
+      '76%的3-6个月同月龄宝妈推荐',
+      '防胀气有效率89%，明显高于平均水平',
+      '柔软度接近母乳，宝宝接受度92%',
+      '价格略高但使用体验更好，值得投资'
+    ],
+    alternatives: '如果预算有限，Dr.Brown也是不错的选择'
+  };
+
+  // 推荐产品列表
+  const recommendations = [
+    {
+      id: 1,
+      rank: 1,
+      name: 'Comotomo可么多么硅胶奶瓶',
+      brand: 'Comotomo',
+      model: '250ml',
+      image: '🍼',
+      price: 128,
+      originalPrice: 189,
+      discount: 32,
+      rating: 4.8,
+      reviewCount: 234,
+      matchScore: 95,
+      badges: ['最佳匹配', '宝妈首选'],
+      reasons: [
+        '76%同月龄推荐',
+        '防胀气89%有效',
+        '宝宝接受度92%'
+      ],
+      pros: ['防胀气有效', '易清洗', '宝宝喜欢'],
+      cons: ['价格稍高', '硅胶易沾灰'],
+      stats: {
+        sameAgeUsers: 156,
+        sameAgeRate: 76,
+        stillUsing: 189,
+        repurchase: 45,
+        effectiveness: 89
+      },
+      tags: ['防胀气', '仿母乳', '易清洗'],
+      platforms: [
+        { name: '淘宝', price: 128, coupon: 20, final: 108 },
+        { name: '京东', price: 135, coupon: 15, final: 120 }
+      ]
+    },
+    {
+      id: 2,
+      rank: 2,
+      name: 'Dr.Brown布朗博士防胀气奶瓶',
+      brand: 'Dr.Brown',
+      model: '240ml',
+      image: '🍼',
+      price: 98,
+      originalPrice: 158,
+      discount: 38,
+      rating: 4.6,
+      reviewCount: 189,
+      matchScore: 88,
+      badges: ['高性价比', '医生推荐'],
+      reasons: [
+        '专利防胀气设计',
+        '医生推荐率高',
+        '性价比出色'
+      ],
+      pros: ['防胀气', '价格适中', '医生推荐'],
+      cons: ['配件多', '清洗麻烦'],
+      stats: {
+        sameAgeUsers: 134,
+        sameAgeRate: 68,
+        stillUsing: 156,
+        repurchase: 32,
+        effectiveness: 82
+      },
+      tags: ['防胀气', '医生推荐', '性价比'],
+      platforms: [
+        { name: '淘宝', price: 98, coupon: 10, final: 88 },
+        { name: '京东', price: 102, coupon: 10, final: 92 }
+      ]
+    },
+    {
+      id: 3,
+      rank: 3,
+      name: 'NUK自然实感宽口径奶瓶',
+      brand: 'NUK',
+      model: '260ml',
+      image: '🍼',
+      price: 78,
+      originalPrice: 128,
+      discount: 39,
+      rating: 4.5,
+      reviewCount: 167,
+      matchScore: 82,
+      badges: ['预算友好'],
+      reasons: [
+        '德国品牌质量好',
+        '宽口易清洗',
+        '价格实惠'
+      ],
+      pros: ['易清洗', '价格低', '质量好'],
+      cons: ['防胀气一般', '奶嘴偏硬'],
+      stats: {
+        sameAgeUsers: 98,
+        sameAgeRate: 62,
+        stillUsing: 123,
+        repurchase: 28,
+        effectiveness: 76
+      },
+      tags: ['宽口径', '易清洗', '实惠'],
+      platforms: [
+        { name: '淘宝', price: 78, coupon: 8, final: 70 },
+        { name: '京东', price: 82, coupon: 8, final: 74 }
+      ]
+    }
+  ];
+
+  const handleCompareToggle = (productId) => {
+    if (selectedForCompare.includes(productId)) {
+      setSelectedForCompare(selectedForCompare.filter(id => id !== productId));
+    } else if (selectedForCompare.length < 3) {
+      setSelectedForCompare([...selectedForCompare, productId]);
+    }
+  };
+
+  const renderSmartConclusion = () => (
+    <div className="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 rounded-2xl p-4 mb-4 border-2 border-blue-200">
+      <div className="flex items-center gap-2 mb-3">
+        <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+          <Sparkles className="w-5 h-5 text-white" />
+        </div>
+        <h2 className="font-bold text-gray-800">智能推荐结论</h2>
+        <span className="text-xs text-purple-600 bg-purple-100 px-2 py-0.5 rounded-full ml-auto">
+          AI分析
+        </span>
+      </div>
+
+      {/* 最佳匹配 */}
+      <div className="bg-white rounded-xl p-4 mb-3 border-2 border-green-300">
+        <div className="flex items-center gap-2 mb-2">
+          <Award className="w-5 h-5 text-green-600" />
+          <span className="text-sm font-semibold text-green-700">最适合你的宝宝</span>
+        </div>
+        <div className="font-bold text-lg text-gray-800 mb-1">
+          {smartConclusion.bestMatch.name}
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-semibold">
+            匹配度 {smartConclusion.bestMatch.matchScore}%
+          </div>
+          <button className="text-xs text-blue-600 font-medium">
+            查看详情 →
+          </button>
+        </div>
+      </div>
+
+      {/* 推荐理由 */}
+      <div className="bg-white rounded-xl p-3 mb-3">
+        <div className="text-xs font-semibold text-gray-700 mb-2">💡 为什么推荐</div>
+        <div className="space-y-1.5">
+          {smartConclusion.keyPoints.map((point, idx) => (
+            <div key={idx} className="flex items-start gap-2 text-xs text-gray-700">
+              <CheckCircle className="w-3.5 h-3.5 text-green-600 flex-shrink-0 mt-0.5" />
+              <span>{point}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 备选方案 */}
+      <div className="bg-orange-50 rounded-lg p-2">
+        <div className="text-xs text-orange-800">
+          <Info className="w-3 h-3 inline mr-1" />
+          {smartConclusion.alternatives}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderProductCard = (product) => (
+    <div key={product.id} className="bg-white rounded-2xl p-4 shadow-md border-2 border-gray-200 hover:border-blue-300 transition-all">
+      {/* 排名和匹配度 */}
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
+            product.rank === 1 
+              ? 'bg-gradient-to-r from-yellow-400 to-orange-400'
+              : product.rank === 2
+              ? 'bg-gradient-to-r from-gray-300 to-gray-400'
+              : 'bg-gradient-to-r from-orange-300 to-orange-400'
+          }`}>
+            {product.rank}
+          </div>
+          <div className={`px-3 py-1 rounded-full text-xs font-bold ${
+            product.matchScore >= 90 
+              ? 'bg-green-100 text-green-700'
+              : product.matchScore >= 80
+              ? 'bg-blue-100 text-blue-700'
+              : 'bg-gray-100 text-gray-700'
+          }`}>
+            <Zap className="w-3 h-3 inline mr-1" />
+            匹配 {product.matchScore}%
+          </div>
+        </div>
+        
+        <button 
+          onClick={() => handleCompareToggle(product.id)}
+          className={`p-2 rounded-lg ${
+            selectedForCompare.includes(product.id)
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-100 text-gray-600'
+          }`}
+        >
+          <Heart className={`w-5 h-5 ${selectedForCompare.includes(product.id) ? 'fill-current' : ''}`} />
+        </button>
+      </div>
+
+      {/* 徽章 */}
+      {product.badges.length > 0 && (
+        <div className="flex gap-2 mb-3">
+          {product.badges.map((badge, idx) => (
+            <span key={idx} className={`text-xs px-2 py-1 rounded-full font-semibold ${
+              badge === '最佳匹配' ? 'bg-red-500 text-white' :
+              badge === '宝妈首选' ? 'bg-purple-500 text-white' :
+              badge === '高性价比' ? 'bg-green-500 text-white' :
+              badge === '医生推荐' ? 'bg-blue-500 text-white' :
+              'bg-orange-500 text-white'
+            }`}>
+              {badge}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* 产品信息 */}
+      <div className="flex gap-3 mb-3">
+        <div className="w-24 h-24 bg-gray-100 rounded-xl flex items-center justify-center text-5xl flex-shrink-0 border border-gray-200">
+          {product.image}
+        </div>
+        <div className="flex-1">
+          <div className="text-xs text-gray-500 mb-1">{product.brand}</div>
+          <div className="font-semibold text-gray-800 mb-1 line-clamp-2">
+            {product.name}
+          </div>
+          <div className="text-xs text-gray-500 mb-2">{product.model}</div>
+          <div className="flex items-center gap-2">
+            <span className="text-red-500 font-bold text-xl">¥{product.price}</span>
+            <span className="text-xs text-gray-400 line-through">¥{product.originalPrice}</span>
+            <span className="text-xs text-red-500 bg-red-50 px-2 py-0.5 rounded">
+              省{product.discount}%
+            </span>
+          </div>
+          <div className="flex items-center gap-1 mt-1">
+            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+            <span className="text-sm font-semibold">{product.rating}</span>
+            <span className="text-xs text-gray-500">({product.reviewCount})</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 推荐理由 */}
+      <div className="bg-blue-50 rounded-xl p-3 mb-3">
+        <div className="text-xs text-blue-800 font-semibold mb-2">
+          <CheckCircle className="w-3 h-3 inline mr-1" />
+          为什么推荐
+        </div>
+        <div className="space-y-1">
+          {product.reasons.map((reason, idx) => (
+            <div key={idx} className="flex items-start gap-2 text-xs text-gray-700">
+              <div className="w-1 h-1 bg-blue-500 rounded-full mt-1.5 flex-shrink-0"></div>
+              <span>{reason}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 同月龄数据 */}
+      <div className="bg-purple-50 rounded-xl p-3 mb-3">
+        <div className="text-xs text-purple-700 font-semibold mb-2">
+          <Users className="w-3 h-3 inline mr-1" />
+          同月龄真实数据
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <div className="text-lg font-bold text-purple-600">{product.stats.sameAgeUsers}</div>
+            <div className="text-xs text-gray-600">位宝妈使用</div>
+          </div>
+          <div>
+            <div className="text-lg font-bold text-green-600">{product.stats.sameAgeRate}%</div>
+            <div className="text-xs text-gray-600">推荐率</div>
+          </div>
+          <div>
+            <div className="text-lg font-bold text-blue-600">{product.stats.stillUsing}</div>
+            <div className="text-xs text-gray-600">仍在使用</div>
+          </div>
+          <div>
+            <div className="text-lg font-bold text-orange-600">{product.stats.effectiveness}%</div>
+            <div className="text-xs text-gray-600">防胀气有效</div>
+          </div>
+        </div>
+      </div>
+
+      {/* 优缺点 */}
+      <div className="grid grid-cols-2 gap-2 mb-3">
+        <div className="bg-green-50 rounded-lg p-2">
+          <div className="text-xs text-green-700 font-semibold mb-1">
+            <ThumbsUp className="w-3 h-3 inline mr-1" />
+            优点
+          </div>
+          <div className="space-y-1">
+            {product.pros.slice(0, 2).map((pro, idx) => (
+              <div key={idx} className="text-xs text-gray-700">• {pro}</div>
+            ))}
+          </div>
+        </div>
+        <div className="bg-orange-50 rounded-lg p-2">
+          <div className="text-xs text-orange-700 font-semibold mb-1">
+            <AlertTriangle className="w-3 h-3 inline mr-1" />
+            缺点
+          </div>
+          <div className="space-y-1">
+            {product.cons.slice(0, 2).map((con, idx) => (
+              <div key={idx} className="text-xs text-gray-700">• {con}</div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 购买渠道 */}
+      <div className="bg-gray-50 rounded-lg p-3 mb-3">
+        <div className="text-xs text-gray-600 mb-2">最低价</div>
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-sm font-semibold text-gray-800">{product.platforms[0].name}</div>
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-bold text-red-500">¥{product.platforms[0].final}</span>
+              <span className="text-xs text-orange-600">券{product.platforms[0].coupon}元</span>
+            </div>
+          </div>
+          <button className="bg-gradient-to-r from-orange-400 to-red-500 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-1">
+            <ShoppingCart className="w-4 h-4" />
+            立即购买
+          </button>
+        </div>
+      </div>
+
+      {/* 操作按钮 */}
+      <div className="flex gap-2">
+        <button className="flex-1 bg-blue-500 text-white py-3 rounded-xl font-semibold text-sm">
+          查看详情
+        </button>
+        <button 
+          onClick={() => handleCompareToggle(product.id)}
+          className={`px-4 py-3 rounded-xl font-semibold text-sm ${
+            selectedForCompare.includes(product.id)
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-100 text-gray-700'
+          }`}
+        >
+          {selectedForCompare.includes(product.id) ? '已选' : '对比'}
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="max-w-md mx-auto bg-gray-50 min-h-screen flex flex-col">
+      {/* 顶部导航 */}
+      <div className="bg-white px-4 py-3 flex items-center justify-between shadow-sm sticky top-0 z-50">
+        <button className="flex items-center gap-2">
+          <ArrowLeft className="w-5 h-5" />
+          <span className="font-semibold">推荐结果</span>
+        </button>
+        <div className="flex items-center gap-3">
+          <button onClick={() => setShowFilters(!showFilters)}>
+            <Filter className="w-5 h-5 text-gray-600" />
+          </button>
+          <button>
+            <Share2 className="w-5 h-5 text-gray-600" />
+          </button>
+        </div>
+      </div>
+
+      {/* 筛选条件总结 */}
+      <div className="bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-3 text-white">
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="font-bold">为你精选</h2>
+          <button className="text-xs flex items-center gap-1 bg-white/20 px-2 py-1 rounded">
+            <RefreshCw className="w-3 h-3" />
+            重新选择
+          </button>
+        </div>
+        <div className="flex flex-wrap gap-2 mb-2">
+          <span className="text-xs bg-white/30 px-2 py-1 rounded-full">
+            {filters.babyAge}宝宝
+          </span>
+          <span className="text-xs bg-white/30 px-2 py-1 rounded-full">
+            {filters.problem}问题
+          </span>
+          <span className="text-xs bg-white/30 px-2 py-1 rounded-full">
+            {filters.budget}预算
+          </span>
+        </div>
+        <div className="text-sm opacity-90">
+          找到 <span className="font-bold">{filters.resultCount}</span> 个符合条件的产品
+        </div>
+      </div>
+
+      {/* 排序方式 */}
+      <div className="bg-white px-4 py-2 border-b flex items-center gap-2 overflow-x-auto">
+        <button
+          onClick={() => setSortBy('smart')}
+          className={`px-3 py-1 rounded-full text-xs whitespace-nowrap ${
+            sortBy === 'smart'
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-100 text-gray-700'
+          }`}
+        >
+          智能推荐
+        </button>
+        <button
+          onClick={() => setSortBy('rate')}
+          className={`px-3 py-1 rounded-full text-xs whitespace-nowrap ${
+            sortBy === 'rate'
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-100 text-gray-700'
+          }`}
+        >
+          好评率
+        </button>
+        <button
+          onClick={() => setSortBy('price-asc')}
+          className={`px-3 py-1 rounded-full text-xs whitespace-nowrap ${
+            sortBy === 'price-asc'
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-100 text-gray-700'
+          }`}
+        >
+          价格从低到高
+        </button>
+        <button
+          onClick={() => setSortBy('sales')}
+          className={`px-3 py-1 rounded-full text-xs whitespace-nowrap ${
+            sortBy === 'sales'
+              ? 'bg-blue-500 text-white'
+              : 'bg-gray-100 text-gray-700'
+          }`}
+        >
+          销量
+        </button>
+      </div>
+
+      {/* 内容区域 */}
+      <div className="flex-1 overflow-y-auto p-4 pb-24 space-y-4">
+        {/* 智能推荐结论 */}
+        {renderSmartConclusion()}
+
+        {/* 产品列表 */}
+        {recommendations.map(product => renderProductCard(product))}
+
+        {/* 查看更多 */}
+        <button className="w-full py-4 text-sm text-gray-600 border border-gray-200 rounded-xl bg-white">
+          查看更多产品 →
+        </button>
+      </div>
+
+      {/* 底部对比栏 */}
+      {selectedForCompare.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t px-4 py-3 max-w-md mx-auto z-50 shadow-lg">
+          <div className="flex items-center justify-between">
+            <div className="text-sm">
+              已选 <span className="font-bold text-blue-600">{selectedForCompare.length}</span>/3 个产品
+            </div>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => setSelectedForCompare([])}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700"
+              >
+                清空
+              </button>
+              <button 
+                disabled={selectedForCompare.length < 2}
+                className={`px-4 py-2 rounded-lg text-sm font-semibold ${
+                  selectedForCompare.length >= 2
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-200 text-gray-400'
+                }`}
+              >
+                开始对比
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default SmartRecommendationPage;
